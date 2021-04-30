@@ -26,7 +26,11 @@
 *.a
 *.lib
 
-# Executables
-*.exe
+# Executables (but let's commit the .exe to be sure the first couple of times
+# *.exe
 *.out
 *.app
+
+# VS-code stuff
+.idea
+.vscode
