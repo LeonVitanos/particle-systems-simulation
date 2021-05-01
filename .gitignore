@@ -24,7 +24,6 @@
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables (but let's commit the .exe to be sure the first couple of times
 # *.exe
