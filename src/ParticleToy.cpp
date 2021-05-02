@@ -20,7 +20,7 @@
 /* macros */
 
 /* external definitions (from solver) */
-extern void simulation_step(std::vector<Particle *> pVector, float dt);
+extern void simulation_step(std::vector<Particle *> pVector, float dt, int solver);
 
 /* global variables */
 
@@ -291,7 +291,7 @@ static void reshape_func(int width, int height)
 static void idle_func(void)
 {
 	if (dsim)
-		simulation_step(pVector, dt);
+		simulation_step(pVector, dt, 0);
 	else
 	{
 		get_from_UI();
