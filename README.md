@@ -13,3 +13,8 @@ Simulation in Computer Graphics Project Part 1
 
 - Replace all `<GLUT/glut.h>` by `<GL/glut.h>` (or just GLUT -> GL)
 - Make sure your msys and MinGW are set up correctly
+
+## Code issues
+
+- Turn off gravity: ParticleToy.cpp lines 107-110
+- Edit spring forces (Euler computation): SpringForce.cpp calculate() function

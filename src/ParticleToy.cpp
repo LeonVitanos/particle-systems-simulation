@@ -2,6 +2,8 @@
 //
 
 #include "Particle.h"
+#include "Force.h"
+#include "Gravity.h"
 #include "SpringForce.h"
 #include "RodConstraint.h"
 #include "CircularWireConstraint.h"
@@ -20,7 +22,7 @@
 /* macros */
 
 /* external definitions (from solver) */
-extern void simulation_step(std::vector<Particle *> pVector, float dt, int solver);
+extern void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> forces, float dt, int solver);
 
 /* global variables */
 
@@ -40,6 +42,9 @@ static int mouse_release[3];
 static int mouse_shiftclick[3];
 static int omx, omy, mx, my;
 static int hmx, hmy;
+
+// Vector of generalized forces
+static std::vector<Force *> forces;
 
 static SpringForce *delete_this_dummy_spring = NULL;
 static RodConstraint *delete_this_dummy_rod = NULL;
@@ -69,6 +74,7 @@ static void free_data(void)
 		delete delete_this_dummy_wire;
 		delete_this_dummy_wire = NULL;
 	}
+	forces.clear();
 }
 
 static void clear_data(void)
@@ -91,14 +97,20 @@ static void init_system(void)
 	// circular wire constraint to the first.
 
 	pVector.push_back(new Particle(center + offset));
-	pVector.push_back(new Particle(center + offset + offset));
 	pVector.push_back(new Particle(center + offset + offset + offset));
+	pVector.push_back(new Particle(center + offset + offset + offset + offset));
 
 	// You shoud replace these with a vector generalized forces and one of
 	// constraints...
-	delete_this_dummy_spring = new SpringForce(pVector[0], pVector[1], dist, 1.0, 1.0);
-	delete_this_dummy_rod = new RodConstraint(pVector[1], pVector[2], dist);
-	delete_this_dummy_wire = new CircularWireConstraint(pVector[0], center, dist);
+
+	// Add gravity into the mix
+	for (int i = 0; i < pVector.size(); i++)
+	{
+		forces.push_back((Force *)new Gravity(pVector[i]));
+	}
+
+	// Set the spring force
+	forces.push_back((Force *)new SpringForce(pVector[0], pVector[1], dist, 1.0, 1.0));
 }
 
 /*
@@ -157,9 +169,10 @@ static void draw_particles(void)
 
 static void draw_forces(void)
 {
-	// change this to iteration over full set
-	if (delete_this_dummy_spring)
-		delete_this_dummy_spring->draw();
+	for (auto force : forces)
+	{
+		force->draw();
+	}
 }
 
 static void draw_constraints(void)
@@ -250,6 +263,8 @@ static void key_func(unsigned char key, int x, int y)
 
 	case ' ':
 		dsim = !dsim;
+		// TODO maybe remove this, but it's annoying for now
+		clear_data();
 		break;
 	}
 }
@@ -291,7 +306,7 @@ static void reshape_func(int width, int height)
 static void idle_func(void)
 {
 	if (dsim)
-		simulation_step(pVector, dt, 0);
+		simulation_step(pVector, forces, dt, 0);
 	else
 	{
 		get_from_UI();
@@ -359,7 +374,7 @@ int main(int argc, char **argv)
 	if (argc == 1)
 	{
 		N = 64;
-		dt = 0.1f;
+		dt = 0.5f;
 		d = 5.f;
 		fprintf(stderr, "Using defaults : N=%d dt=%g d=%g\n",
 				N, dt, d);
