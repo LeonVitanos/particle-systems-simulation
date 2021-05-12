@@ -45,6 +45,7 @@ static int hmx, hmy;
 
 // Vector of generalized forces
 static std::vector<Force *> forces;
+static std::vector<Force *> constraints;
 
 static SpringForce *delete_this_dummy_spring = NULL;
 static RodConstraint *delete_this_dummy_rod = NULL;
@@ -75,6 +76,7 @@ static void free_data(void)
 		delete_this_dummy_wire = NULL;
 	}
 	forces.clear();
+	constraints.clear();
 }
 
 static void clear_data(void)
@@ -100,18 +102,15 @@ static void init_system(void)
 	pVector.push_back(new Particle(center + offset + offset + offset));
 	pVector.push_back(new Particle(center + offset + offset + offset + offset));
 
-	// You shoud replace these with a vector generalized forces and one of
-	// constraints...
-
 	// Add gravity into the mix
-	/*
-	for (int i = 0; i < pVector.size(); i++)
-	{
-		forces.push_back((Force *)new Gravity(pVector[i]));
-	}*/
+
+	// for (int i = 0; i < pVector.size(); i++)
+	// {
+	// 	forces.push_back((Force *)new Gravity(pVector[i]));
+	// }
 
 	// Set the spring force
-	forces.push_back((Force *)new SpringForce(pVector[0], pVector[1], dist, 0.5, 0.1));
+	forces.push_back((Force *)new SpringForce(pVector[0], pVector[1], dist, 1, 1));
 
 	//delete_this_dummy_rod = new RodConstraint(pVector[1], pVector[2], dist);
 	//delete_this_dummy_wire = new CircularWireConstraint(pVector[0], center, dist);
@@ -181,11 +180,10 @@ static void draw_forces(void)
 
 static void draw_constraints(void)
 {
-	// change this to iteration over full set
-	if (delete_this_dummy_rod)
-		delete_this_dummy_rod->draw();
-	if (delete_this_dummy_wire)
-		delete_this_dummy_wire->draw();
+	for (auto constraint : constraints)
+	{
+		constraint->draw();
+	}
 }
 
 /*
