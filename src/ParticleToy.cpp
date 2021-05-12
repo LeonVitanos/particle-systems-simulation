@@ -104,13 +104,17 @@ static void init_system(void)
 	// constraints...
 
 	// Add gravity into the mix
+	/*
 	for (int i = 0; i < pVector.size(); i++)
 	{
 		forces.push_back((Force *)new Gravity(pVector[i]));
-	}
+	}*/
 
 	// Set the spring force
-	forces.push_back((Force *)new SpringForce(pVector[0], pVector[1], dist, 1.0, 1.0));
+	forces.push_back((Force *)new SpringForce(pVector[0], pVector[1], dist, 0.5, 0.1));
+
+	//delete_this_dummy_rod = new RodConstraint(pVector[1], pVector[2], dist);
+	//delete_this_dummy_wire = new CircularWireConstraint(pVector[0], center, dist);
 }
 
 /*

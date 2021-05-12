@@ -41,7 +41,9 @@ set(SOURCE_FILES
         src/ParticleToy.cpp
         src/RodConstraint.cpp
         src/Solver.cpp
-        src/SpringForce.cpp)
+        src/SpringForce.cpp
+        src/Gravity.cpp
+        src/Force.cpp)
 
 set(LIBRARY_FILES
         lib/x64/libfreeglut.a

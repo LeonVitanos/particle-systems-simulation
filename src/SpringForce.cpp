@@ -33,10 +33,11 @@ void SpringForce::calculate()
   // TODO either the computation is really slow or the time delta is just not fast enough
   // It also seems to expand even further rather than to contract nicely
   Vec2f l = this->m_p1->m_Position - this->m_p2->m_Position;
-  float l_abs = sqrtf(l * l);
+  float dist = norm(l);
+  //float l_abs = sqrtf(l * l); LOL
   Vec2f l_dot = this->m_p1->m_Velocity - this->m_p2->m_Velocity;
-  float test = (m_ks * (l_abs - this->m_dist) + m_kd + (l_dot * l) / l_abs);
-  this->force = test * (l / l_abs);
+  float test = (m_ks * (dist - this->m_dist) + 0.3 * (l_dot * l) / dist);
+  this->force = test * (l / dist);
   m_p1->m_Force -= this->force;
   m_p2->m_Force += this->force;
 }
