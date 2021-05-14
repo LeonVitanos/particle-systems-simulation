@@ -51,6 +51,16 @@ static SpringForce *delete_this_dummy_spring = NULL;
 static RodConstraint *delete_this_dummy_rod = NULL;
 static CircularWireConstraint *delete_this_dummy_wire = NULL;
 
+// Init GLUT menu for solver
+static int solver=0;
+enum MENU_TYPE
+{
+	MENU_EULER,
+	MENU_MIDPOINT,
+	MENU_RUNGE_KUTTA,
+};
+MENU_TYPE show = MENU_EULER;
+
 /*
 ----------------------------------------------------------------------
 free/clear/allocate simulation data
@@ -103,7 +113,7 @@ static void init_system(void)
 	pVector.push_back(new Particle(center + offset + offset + offset + offset));
 
 	// Add gravity into the mix
-
+	
 	// for (int i = 0; i < pVector.size(); i++)
 	// {
 	// 	forces.push_back((Force *)new Gravity(pVector[i]));
@@ -308,7 +318,7 @@ static void reshape_func(int width, int height)
 static void idle_func(void)
 {
 	if (dsim)
-		simulation_step(pVector, forces, dt, 0);
+		simulation_step(pVector, forces, dt, solver);
 	else
 	{
 		get_from_UI();
@@ -336,6 +346,26 @@ open_glut_window --- open a glut compatible window and set callbacks
 ----------------------------------------------------------------------
 */
 
+void menu(int item)
+{
+	solver=item;
+
+	switch (item)
+	{
+		case MENU_EULER:
+		case MENU_MIDPOINT:
+		case MENU_RUNGE_KUTTA:
+		{
+			show = (MENU_TYPE) item;
+		}
+		break;
+	}
+
+	glutPostRedisplay();
+
+	return;
+}
+
 static void open_glut_window(void)
 {
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
@@ -343,6 +373,15 @@ static void open_glut_window(void)
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(win_x, win_y);
 	win_id = glutCreateWindow("Particletoys!");
+
+	glutCreateMenu(menu);
+	 // Add menu items
+	glutAddMenuEntry("Euler", MENU_EULER);
+	glutAddMenuEntry("Midpoint", MENU_MIDPOINT);
+	glutAddMenuEntry("RungeKutta", MENU_RUNGE_KUTTA);
+
+	// Associate a mouse button with menu
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -401,6 +440,7 @@ int main(int argc, char **argv)
 
 	win_x = 512;
 	win_y = 512;
+
 	open_glut_window();
 
 	glutMainLoop();
