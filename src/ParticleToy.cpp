@@ -61,6 +61,8 @@ enum MENU_TYPE
 };
 MENU_TYPE show = MENU_EULER;
 
+int dragParticle;
+
 /*
 ----------------------------------------------------------------------
 free/clear/allocate simulation data
@@ -112,7 +114,9 @@ static void init_system(void)
 	pVector.push_back(new Particle(center + offset));
 	pVector.push_back(new Particle(center + offset + offset + offset));
 	pVector.push_back(new Particle(center + offset + offset + offset + offset));
-	pVector.push_back(new Particle(mouse));
+	//pVector.push_back(new Particle(mouse));
+
+	dragParticle = pVector.size();
 
 	// Add gravity into the mix
 
@@ -123,7 +127,9 @@ static void init_system(void)
 
 	// Set the spring force
 	forces.push_back((Force *)new SpringForce(pVector[0], pVector[1], dist, 1, 1));
-	forces.push_back((Force *)new SpringForce(pVector[2], pVector[3], 0.2, 1, 1));
+	forces.push_back((Force *)new SpringForce(pVector[1], pVector[2], dist, 1, 1));
+	forces.push_back((Force *)new SpringForce(pVector[0], pVector[2], dist, 1, 1));
+	//forces.push_back((Force *)new SpringForce(pVector[2], pVector[3], 0.2, 1, 1));
 
 	//delete_this_dummy_rod = new RodConstraint(pVector[1], pVector[2], dist);
 	//delete_this_dummy_wire = new CircularWireConstraint(pVector[0], center, dist);
@@ -222,22 +228,27 @@ static void get_from_UI()
 
 	if (mouse_down[0]) // Left mouse button pressed
 	{
-		//printf("i: %d \n", i);
-		//printf("j: %d \n", j);
-
 		float px = (float) (i - 32) / 32;
 		float py = (float) (j - 32) / 32;
 
+		int ii = 0, size = pVector.size();
 
-		//printf("px: %4.2f \n", px);
-		//printf("py: %4.2f \n", py);
-		//printf("win_x: %d \n", win_x);
-		//printf("win_y: %d \n", win_y);
-		//printf("N: %d \n", N);
+		if (dragParticle == size) {
+			for(ii = 0; ii < size; ii++)
+			{
+				double x = pVector[ii]->m_Position[0], y = pVector[ii]->m_Position[1];
+				if(px > x - 0.1 && px < x + 0.1 && py > y - 0.1 && py < y + 0.1) 
+				{
+					dragParticle = ii;
+					break;
+				}
+			}
+		}
 
-		Vec2f mouse(px, py);
-
-		pVector[3]->m_Position = mouse;
+		if (dragParticle < size) {
+			Vec2f mouse(px, py);
+			pVector[dragParticle]->m_Position = mouse;
+		}
 		
 	}
 
@@ -250,6 +261,7 @@ static void get_from_UI()
 
 	if (mouse_release[0]) // Left mouse button released (is indefinitely active after first press)
 	{
+		dragParticle = pVector.size();
 	}
 
 	omx = mx;
@@ -336,7 +348,8 @@ static void reshape_func(int width, int height)
 
 static void idle_func(void)
 {
-		get_from_UI();
+	get_from_UI();
+
 	if (dsim)
 		simulation_step(pVector, forces, dt, solver);
 	else
