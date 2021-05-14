@@ -31,9 +31,6 @@ void SpringForce::calculate()
  * f_a = - [ k_s (l_abs - r) + k_d * ( (l_dot * l) / l_abs)] * l/l_abs.
  */
 {
-  // TODO either the computation is really slow or the time delta is just not fast enough
-  // It also seems to expand even further rather than to contract nicely
-
   Vec2f l = this->m_p1->m_Position - this->m_p2->m_Position;
   float dist = norm(l);
   Vec2f l_dot = this->m_p1->m_Velocity - this->m_p2->m_Velocity;
