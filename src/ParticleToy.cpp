@@ -94,6 +94,7 @@ static void init_system(void)
 	const double dist = 0.2;
 	const Vec2f center(0.0, 0.0);
 	const Vec2f offset(dist, 0.0);
+	Vec2f mouse(0.5, 0.5);
 
 	// Create three particles, attach them to each other, then add a
 	// circular wire constraint to the first.
@@ -101,16 +102,18 @@ static void init_system(void)
 	pVector.push_back(new Particle(center + offset));
 	pVector.push_back(new Particle(center + offset + offset + offset));
 	pVector.push_back(new Particle(center + offset + offset + offset + offset));
+	pVector.push_back(new Particle(mouse));
 
 	// Add gravity into the mix
 
-	// for (int i = 0; i < pVector.size(); i++)
-	// {
-	// 	forces.push_back((Force *)new Gravity(pVector[i]));
-	// }
+	/*for (int i = 0; i < pVector.size()-1; i++)
+	{
+	   forces.push_back((Force *)new Gravity(pVector[i]));
+	}*/
 
 	// Set the spring force
 	forces.push_back((Force *)new SpringForce(pVector[0], pVector[1], dist, 1, 1));
+	forces.push_back((Force *)new SpringForce(pVector[2], pVector[3], 0.2, 1, 1));
 
 	//delete_this_dummy_rod = new RodConstraint(pVector[1], pVector[2], dist);
 	//delete_this_dummy_wire = new CircularWireConstraint(pVector[0], center, dist);
@@ -207,19 +210,35 @@ static void get_from_UI()
 	if (i < 1 || i > N || j < 1 || j > N)
 		return;
 
-	if (mouse_down[0])
+	if (mouse_down[0]) // Left mouse button pressed
 	{
-		printf("\t |Mouse stuff!!\n");
+		//printf("i: %d \n", i);
+		//printf("j: %d \n", j);
+
+		float px = (float) (i - 32) / 32;
+		float py = (float) (j - 32) / 32;
+
+
+		//printf("px: %4.2f \n", px);
+		//printf("py: %4.2f \n", py);
+		//printf("win_x: %d \n", win_x);
+		//printf("win_y: %d \n", win_y);
+		//printf("N: %d \n", N);
+
+		Vec2f mouse(px, py);
+
+		pVector[3]->m_Position = mouse;
+		
 	}
 
-	if (mouse_down[2])
+	if (mouse_down[2]) // Right mouse button pressed
 	{
 	}
 
 	hi = (int)((hmx / (float)win_x) * N);
 	hj = (int)(((win_y - hmy) / (float)win_y) * N);
 
-	if (mouse_release[0])
+	if (mouse_release[0]) // Left mouse button released (is indefinitely active after first press)
 	{
 	}
 
@@ -307,11 +326,11 @@ static void reshape_func(int width, int height)
 
 static void idle_func(void)
 {
+		get_from_UI();
 	if (dsim)
 		simulation_step(pVector, forces, dt, 0);
 	else
 	{
-		get_from_UI();
 		remap_GUI();
 	}
 
