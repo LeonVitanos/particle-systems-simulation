@@ -4,6 +4,7 @@
 #include "Particle.h"
 #include "Force.h"
 #include "Gravity.h"
+#include "Scene.h"
 #include "SpringForce.h"
 #include "RodConstraint.h"
 #include "CircularWireConstraint.h"
@@ -22,7 +23,7 @@
 /* macros */
 
 /* external definitions (from solver) */
-extern void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> forces, float dt, int solver);
+extern void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> forces, std::vector<Force *> constraints, float dt, int solver);
 
 /* global variables */
 
@@ -52,7 +53,7 @@ static RodConstraint *delete_this_dummy_rod = NULL;
 static CircularWireConstraint *delete_this_dummy_wire = NULL;
 
 // Init GLUT menu for solver
-static int solver=0;
+static int solver = 0;
 enum MENU_TYPE
 {
 	MENU_EULER,
@@ -99,40 +100,6 @@ static void clear_data(void)
 	{
 		pVector[ii]->reset();
 	}
-}
-
-static void init_system(void)
-{
-	const double dist = 0.2;
-	const Vec2f center(0.0, 0.0);
-	const Vec2f offset(dist, 0.0);
-	Vec2f mouse(0.5, 0.5);
-
-	// Create three particles, attach them to each other, then add a
-	// circular wire constraint to the first.
-
-	pVector.push_back(new Particle(center + offset));
-	pVector.push_back(new Particle(center + offset + offset + offset));
-	pVector.push_back(new Particle(center + offset + offset + offset + offset));
-	//pVector.push_back(new Particle(mouse));
-
-	dragParticle = pVector.size();
-
-	// Add gravity into the mix
-
-	/*for (int i = 0; i < pVector.size()-1; i++)
-	{
-	   forces.push_back((Force *)new Gravity(pVector[i]));
-	}*/
-
-	// Set the spring force
-	forces.push_back((Force *)new SpringForce(pVector[0], pVector[1], dist, 1, 1));
-	forces.push_back((Force *)new SpringForce(pVector[1], pVector[2], dist, 1, 1));
-	forces.push_back((Force *)new SpringForce(pVector[0], pVector[2], dist, 1, 1));
-	//forces.push_back((Force *)new SpringForce(pVector[2], pVector[3], 0.2, 1, 1));
-
-	//delete_this_dummy_rod = new RodConstraint(pVector[1], pVector[2], dist);
-	//delete_this_dummy_wire = new CircularWireConstraint(pVector[0], center, dist);
 }
 
 /*
@@ -228,16 +195,17 @@ static void get_from_UI()
 
 	if (mouse_down[0]) // Left mouse button pressed
 	{
-		float px = (float) (i - 32) / 32;
-		float py = (float) (j - 32) / 32;
+		float px = (float)(i - 32) / 32;
+		float py = (float)(j - 32) / 32;
 
 		int ii = 0, size = pVector.size();
 
-		if (dragParticle == size) {
-			for(ii = 0; ii < size; ii++)
+		if (dragParticle == size)
+		{
+			for (ii = 0; ii < size; ii++)
 			{
 				double x = pVector[ii]->m_Position[0], y = pVector[ii]->m_Position[1];
-				if(px > x - 0.1 && px < x + 0.1 && py > y - 0.1 && py < y + 0.1) 
+				if (px > x - 0.1 && px < x + 0.1 && py > y - 0.1 && py < y + 0.1)
 				{
 					dragParticle = ii;
 					break;
@@ -245,11 +213,11 @@ static void get_from_UI()
 			}
 		}
 
-		if (dragParticle < size) {
+		if (dragParticle < size)
+		{
 			Vec2f mouse(px, py);
 			pVector[dragParticle]->m_Position = mouse;
 		}
-		
 	}
 
 	if (mouse_down[2]) // Right mouse button pressed
@@ -309,6 +277,17 @@ static void key_func(unsigned char key, int x, int y)
 		// TODO maybe remove this, but it's annoying for now
 		clear_data();
 		break;
+
+	case '1':
+		free_data();
+		Scene::setup(pVector, forces, constraints, dragParticle, 1);
+
+		break;
+
+	case '2':
+		free_data();
+		Scene::setup(pVector, forces, constraints, dragParticle, 2);
+		break;
 	}
 }
 
@@ -351,7 +330,7 @@ static void idle_func(void)
 	get_from_UI();
 
 	if (dsim)
-		simulation_step(pVector, forces, dt, solver);
+		simulation_step(pVector, forces, constraints, dt, solver);
 	else
 	{
 		remap_GUI();
@@ -380,17 +359,17 @@ open_glut_window --- open a glut compatible window and set callbacks
 
 void menu(int item)
 {
-	solver=item;
+	solver = item;
 
 	switch (item)
 	{
-		case MENU_EULER:
-		case MENU_MIDPOINT:
-		case MENU_RUNGE_KUTTA:
-		{
-			show = (MENU_TYPE) item;
-		}
-		break;
+	case MENU_EULER:
+	case MENU_MIDPOINT:
+	case MENU_RUNGE_KUTTA:
+	{
+		show = (MENU_TYPE)item;
+	}
+	break;
 	}
 
 	glutPostRedisplay();
@@ -407,7 +386,7 @@ static void open_glut_window(void)
 	win_id = glutCreateWindow("Particletoys!");
 
 	glutCreateMenu(menu);
-	 // Add menu items
+	// Add menu items
 	glutAddMenuEntry("Euler", MENU_EULER);
 	glutAddMenuEntry("Midpoint", MENU_MIDPOINT);
 	glutAddMenuEntry("RungeKutta", MENU_RUNGE_KUTTA);
@@ -461,6 +440,7 @@ int main(int argc, char **argv)
 
 	printf("\n\nHow to use this application:\n\n");
 	printf("\t Toggle construction/simulation display with the spacebar key\n");
+	printf("\t Change scenes using the number keys\n");
 	printf("\t Dump frames by pressing the 'd' key\n");
 	printf("\t Quit by pressing the 'q' key\n");
 
@@ -468,7 +448,7 @@ int main(int argc, char **argv)
 	dump_frames = 0;
 	frame_number = 0;
 
-	init_system();
+	Scene::setup(pVector, forces, constraints, dragParticle, 1);
 
 	win_x = 512;
 	win_y = 512;

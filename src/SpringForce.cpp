@@ -31,9 +31,9 @@ void SpringForce::calculate()
  * f_a = - [ k_s (l_abs - r) + k_d * ( (l_dot * l) / l_abs)] * l/l_abs.
  */
 {
-  Vec2f l = this->m_p1->m_Position - this->m_p2->m_Position;
+  Vec2f l = m_p1->m_Position - m_p2->m_Position;
   float dist = norm(l);
-  Vec2f l_dot = this->m_p1->m_Velocity - this->m_p2->m_Velocity;
+  Vec2f l_dot = m_p1->m_Velocity - m_p2->m_Velocity;
   float test = (m_ks * (dist - this->m_dist) + m_kd * (l_dot * l) / dist);
   this->force = test * (l / dist);
   m_p1->m_Force -= this->force;
