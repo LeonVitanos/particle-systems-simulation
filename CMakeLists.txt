@@ -43,7 +43,8 @@ set(SOURCE_FILES
         src/Solver.cpp
         src/SpringForce.cpp
         src/Gravity.cpp
-        src/Force.cpp)
+        src/Force.cpp
+        src/Scene.cpp)
 
 set(LIBRARY_FILES
         lib/x64/libfreeglut.a
