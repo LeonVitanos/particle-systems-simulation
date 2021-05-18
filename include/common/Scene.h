@@ -4,6 +4,8 @@
 #include "SpringForce.h"
 #include "Gravity.h"
 #include "CircularWireConstraint.h"
+#include "RodConstraint.h"
+#include "FixedConstraint.h"
 
 #include <vector>
 

@@ -42,14 +42,15 @@ void CircularWireConstraint::calculate()
 
 	Vec2f J = 2 * (position - m_center);
 	Vec2f J_dot = 2 * m_p->m_Velocity;
-	double C = ((position - m_center) * (position - m_center)) - (m_radius * m_radius);
 
+	double C = ((position - m_center) * (position - m_center)) - (m_radius * m_radius);
 	double C_dot = 2 * (velocity * (position - m_center));
+
 	float J_dot_q_dot = J_dot * velocity;
 	// Vector-Matrix-Vector multiplication so get ready for ugly code
 	float JWQ = J[0] * W[0][0] * Q[0] + J[1] * W[1][1] * Q[1];
 	float JWJ = J[0] * W[0][0] * J[0] + J[1] * W[1][1] * J[1];
-	float lambda = (0 - J_dot_q_dot - JWQ - C - C_dot) / JWJ;
+	float lambda = (-J_dot_q_dot - JWQ - C - C_dot) / JWJ;
 
 	m_p->m_Force[0] += lambda * J[0];
 	m_p->m_Force[1] += lambda * J[1];

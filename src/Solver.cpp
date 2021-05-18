@@ -28,7 +28,6 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 	int ii, size = pVector.size();
 
 	std::vector<Particle *> initial;
-	dt=0.5;
 
 	switch (solver)
 	{
@@ -41,7 +40,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 		{
 			pVector[ii]->m_Position += dt * pVector[ii]->m_Velocity;					// xdot=v
 			pVector[ii]->m_Velocity += dt * pVector[ii]->m_Force / pVector[ii]->m_Mass; // vdot = f/m
-		}		
+		}
 
 		break;
 	case 1: //MidPoint
@@ -52,7 +51,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 		for (ii = 0; ii < size; ii++)
 		{ //Half euler step
 			initial.push_back(pVector[ii]);
-			pVector[ii]->m_Position += (dt / 2) * pVector[ii]->m_Velocity;					// xdot=v
+			pVector[ii]->m_Position += (dt / 2) * pVector[ii]->m_Velocity;					  // xdot=v
 			pVector[ii]->m_Velocity += (dt / 2) * pVector[ii]->m_Force / pVector[ii]->m_Mass; // vdot = f/m
 		}
 

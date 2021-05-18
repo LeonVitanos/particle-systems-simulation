@@ -256,39 +256,39 @@ static void key_func(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
-		case 'c':
-		case 'C':
-			clear_data();
-			break;
+	case 'c':
+	case 'C':
+		clear_data();
+		break;
 
-		case 'd':
-		case 'D':
-			dump_frames = !dump_frames;
-			break;
+	case 'd':
+	case 'D':
+		dump_frames = !dump_frames;
+		break;
 
-		case 'q':
-		case 'Q':
-			free_data();
-			exit(0);
-			break;
+	case 'q':
+	case 'Q':
+		free_data();
+		exit(0);
+		break;
 
-		case ' ':
-			dsim = !dsim;
-			// TODO maybe remove this, but it's annoying for now
-			clear_data();
-			break;
+	case ' ':
+		dsim = !dsim;
+		// TODO maybe remove this, but it's annoying for now
+		clear_data();
+		break;
 
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-			free_data();
-			Scene::setup(pVector, forces, constraints, dragParticle, key-'0');
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+		free_data();
+		Scene::setup(pVector, forces, constraints, dragParticle, key - '0');
 
-			break;
-		}
+		break;
+	}
 }
 
 static void mouse_func(int button, int state, int x, int y)

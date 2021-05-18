@@ -14,5 +14,4 @@ public:
     virtual void draw();
     virtual void calculate();
     Vec2f force;
-    int id;
 };
