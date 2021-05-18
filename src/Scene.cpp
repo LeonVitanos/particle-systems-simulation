@@ -50,17 +50,21 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
             const Vec2f offset(dist, 0.0);
             Vec2f mouse(0.5, 0.5);
 
-            int s=1;
             for (int i=0; i<10; i++){
                 center=Vec2f(0.0, 0.0+dist*i);
                 for (int j=-4; j<=4; j++){
                     particles.push_back(new Particle(center + j*offset));
+                    //forces.push_back((Force *)new Gravity(particles.back()));
+                    //As a first attempt first row of particles could be fixed point
+                    //if(i==0)
+                       // constraints.push_back((Force *)new FIXEDPOINTConstraint(particles.back(), center, dist));
                     if(j!=-4)
-                        forces.push_back((Force *)new SpringForce(particles[i*9], particles[i*9+j+4], dist, 1, s));
+                        forces.push_back((Force *)new SpringForce(particles[i*9+j+3], particles[i*9+j+4], dist, 1, 1));
                     if(i!=0)
-                        forces.push_back((Force *)new SpringForce(particles[i*9-9+j+4], particles[i*9+j+4], dist, 1, s));
+                        forces.push_back((Force *)new SpringForce(particles[i*9-9+j+4], particles[i*9+j+4], dist, 1, 1));
                 }
             }
+            
         }
     }
 

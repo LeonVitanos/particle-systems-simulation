@@ -28,6 +28,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 	int ii, size = pVector.size();
 
 	std::vector<Particle *> initial;
+	dt=0.5;
 
 	switch (solver)
 	{
@@ -40,23 +41,19 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 		{
 			pVector[ii]->m_Position += dt * pVector[ii]->m_Velocity;					// xdot=v
 			pVector[ii]->m_Velocity += dt * pVector[ii]->m_Force / pVector[ii]->m_Mass; // vdot = f/m
-		}
+		}		
 
 		break;
 	case 1: //MidPoint
 		Clear_Forces(pVector);
-
-		for (ii = 0; ii < size; ii++)
-		{
-			initial.push_back(pVector[ii]);
-		}
 		Compute_Forces(forces);
 		Compute_Forces(constraints);
 
 		for (ii = 0; ii < size; ii++)
-		{
-			pVector[ii]->m_Position += dt / 2 * pVector[ii]->m_Velocity;					// xdot=v
-			pVector[ii]->m_Velocity += dt / 2 * pVector[ii]->m_Force / pVector[ii]->m_Mass; // vdot = f/m
+		{ //Half euler step
+			initial.push_back(pVector[ii]);
+			pVector[ii]->m_Position += (dt / 2) * pVector[ii]->m_Velocity;					// xdot=v
+			pVector[ii]->m_Velocity += (dt / 2) * pVector[ii]->m_Force / pVector[ii]->m_Mass; // vdot = f/m
 		}
 
 		Clear_Forces(pVector);
@@ -81,6 +78,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 		}
 
 		Compute_Forces(forces);
+		Compute_Forces(constraints);
 
 		for (ii = 0; ii < size; ii++)
 		{
@@ -93,6 +91,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 
 		Clear_Forces(pVector);
 		Compute_Forces(forces);
+		Compute_Forces(constraints);
 
 		for (ii = 0; ii < size; ii++)
 		{
@@ -105,6 +104,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 
 		Clear_Forces(pVector);
 		Compute_Forces(forces);
+		Compute_Forces(constraints);
 
 		for (ii = 0; ii < size; ii++)
 		{
@@ -117,6 +117,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 
 		Clear_Forces(pVector);
 		Compute_Forces(forces);
+		Compute_Forces(constraints);
 
 		for (ii = 0; ii < size; ii++)
 		{
