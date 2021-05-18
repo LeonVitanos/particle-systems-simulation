@@ -44,7 +44,8 @@ set(SOURCE_FILES
         src/SpringForce.cpp
         src/Gravity.cpp
         src/Force.cpp
-        src/Scene.cpp)
+        src/Scene.cpp
+        src/FixedConstraint.cpp)
 
 set(LIBRARY_FILES
         lib/x64/libfreeglut.a

@@ -256,39 +256,45 @@ static void key_func(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
-	case 'c':
-	case 'C':
-		clear_data();
-		break;
-
-	case 'd':
-	case 'D':
-		dump_frames = !dump_frames;
-		break;
-
-	case 'q':
-	case 'Q':
-		free_data();
-		exit(0);
-		break;
-
-	case ' ':
-		dsim = !dsim;
-		// TODO maybe remove this, but it's annoying for now
-		clear_data();
-		break;
-
-	case '1':
-	case '2':
-	case '3':
-	case '4':
-	case '5':
-	case '6':
-		free_data();
-		Scene::setup(pVector, forces, constraints, dragParticle, key - '0');
-
-		break;
-	}
+		case 'c':
+		case 'C':
+			clear_data();
+			break;
+		case 'd':
+		case 'D':
+			dump_frames = !dump_frames;
+			break;
+		case 'q':
+		case 'Q':
+			free_data();
+			exit(0);
+			break;
+		case ' ':
+			dsim = !dsim;
+			// TODO maybe remove this, but it's annoying for now
+			clear_data();
+			break;
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+			free_data();
+			Scene::setup(pVector, forces, constraints, dragParticle, key-'0');
+			break;
+		case '+':
+			dt+=0.05;
+			std::cout << "dt = " << dt << std::endl;
+			break;
+		case '-':
+			if(dt<=0.05)
+				std::cout << "Cannot decrease timestep more" << std::endl;
+			else
+				dt-=0.05;
+			std::cout << "dt = " << dt << std::endl;
+			break;
+		}
 }
 
 static void mouse_func(int button, int state, int x, int y)
@@ -441,6 +447,7 @@ int main(int argc, char **argv)
 	printf("\n\nHow to use this application:\n\n");
 	printf("\t Toggle construction/simulation display with the spacebar key\n");
 	printf("\t Change scenes using the number keys\n");
+	printf("\t Increase/decrease timestep by 0.05 with +/-\n");
 	printf("\t Dump frames by pressing the 'd' key\n");
 	printf("\t Quit by pressing the 'q' key\n");
 
