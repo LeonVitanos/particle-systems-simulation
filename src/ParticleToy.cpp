@@ -34,7 +34,7 @@ static int dump_frames;
 static int frame_number;
 
 // static Particle *pList;
-static std::vector<Particle *> pVector;
+std::vector<Particle *> pVector;
 
 static int win_id;
 static int win_x, win_y;
@@ -63,6 +63,7 @@ enum MENU_TYPE
 MENU_TYPE show = MENU_EULER;
 
 int dragParticle;
+bool dragBool = false;
 
 /*
 ----------------------------------------------------------------------
@@ -197,10 +198,31 @@ static void get_from_UI()
 	{
 		float px = (float)(i - 32) / 32;
 		float py = (float)(j - 32) / 32;
+		Vec2f mouse(px, py);
 
 		int ii = 0, size = pVector.size();
 
-		if (dragParticle == size)
+		printf("%d", dragBool);
+		if (!dragBool) {
+			dragBool = true;
+			dragParticle = 0;
+			float diff = (float)sqrt(pow(px - pVector[0]->m_Position[0], 2) + pow(py - pVector[0]->m_Position[1], 2));
+			for (ii = 1; ii < size; ii++)
+			{
+				float newDiff = (float)sqrt(pow(px - pVector[ii]->m_Position[0], 2) + pow(py - pVector[ii]->m_Position[1], 2));
+				if (newDiff < diff) {
+					diff = newDiff;
+					dragParticle = ii;
+				}
+			}
+			pVector.push_back(new Particle(mouse));
+			forces.push_back((Force *)new SpringForce(pVector[dragParticle], pVector[size], diff, 1, 1));
+		} else {
+			//printf("%f", mouse[0]);
+			pVector[size - 1]->m_Position = mouse;
+		}
+
+		/*if (dragParticle == size)
 		{
 			for (ii = 0; ii < size; ii++)
 			{
@@ -215,8 +237,15 @@ static void get_from_UI()
 
 		if (dragParticle < size)
 		{
-			Vec2f mouse(px, py);
 			pVector[dragParticle]->m_Position = mouse;
+		}*/
+	} else {
+		printf("test");
+		//dragParticle = pVector.size();
+		if(dragBool) {
+			forces.pop_back();
+			pVector.pop_back();
+			dragBool = false;
 		}
 	}
 
@@ -229,7 +258,6 @@ static void get_from_UI()
 
 	if (mouse_release[0]) // Left mouse button released (is indefinitely active after first press)
 	{
-		dragParticle = pVector.size();
 	}
 
 	omx = mx;
