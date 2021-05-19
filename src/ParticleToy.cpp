@@ -284,6 +284,7 @@ static void key_func(unsigned char key, int x, int y)
 			Scene::setup(pVector, forces, constraints, dragParticle, key-'0');
 			break;
 		case '+':
+		case '=':
 			dt+=0.05;
 			std::cout << "dt = " << dt << std::endl;
 			break;
