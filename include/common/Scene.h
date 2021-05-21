@@ -6,6 +6,7 @@
 #include "CircularWireConstraint.h"
 #include "RodConstraint.h"
 #include "FixedConstraint.h"
+#include "Wall.h"
 
 #include <vector>
 
@@ -14,5 +15,5 @@ class Scene
 public:
     Scene();
     ~Scene();
-    static void setup(std::vector<Particle *> &particles, std::vector<Force *> &forces, std::vector<Force *> &constraints, int dragParticle, int scene);
+    static void setup(std::vector<Particle *> &particles, std::vector<Force *> &forces, std::vector<Force *> &constraints, std::vector<Wall *> &walls, int scene);
 };

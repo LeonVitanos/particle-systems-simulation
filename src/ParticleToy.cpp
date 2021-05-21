@@ -9,6 +9,7 @@
 #include "RodConstraint.h"
 #include "CircularWireConstraint.h"
 #include "imageio.h"
+#include "Wall.h"
 
 #include <vector>
 #include <stdlib.h>
@@ -47,6 +48,7 @@ static int hmx, hmy;
 // Vector of generalized forces
 static std::vector<Force *> forces;
 static std::vector<Force *> constraints;
+static std::vector<Wall *> walls;
 
 static SpringForce *delete_this_dummy_spring = NULL;
 static RodConstraint *delete_this_dummy_rod = NULL;
@@ -173,6 +175,14 @@ static void draw_constraints(void)
 	}
 }
 
+static void draw_walls(void)
+{
+	for (auto wall: walls)
+	{
+		wall->draw();
+	}
+}
+
 /*
 ----------------------------------------------------------------------
 relates mouse movements to particle toy construction
@@ -202,7 +212,6 @@ static void get_from_UI()
 
 		int ii = 0, size = pVector.size();
 
-		printf("%d", dragBool);
 		if (!dragBool) {
 			dragBool = true;
 			dragParticle = 0;
@@ -217,32 +226,13 @@ static void get_from_UI()
 			}
 			pVector.push_back(new Particle(mouse));
 			forces.push_back((Force *)new SpringForce(pVector[dragParticle], pVector[size], diff, 1, 1));
+			constraints.push_back((Force *)new FixedConstraint(pVector[size]));
 		} else {
-			//printf("%f", mouse[0]);
 			pVector[size - 1]->m_Position = mouse;
 		}
-
-		/*if (dragParticle == size)
-		{
-			for (ii = 0; ii < size; ii++)
-			{
-				double x = pVector[ii]->m_Position[0], y = pVector[ii]->m_Position[1];
-				if (px > x - 0.1 && px < x + 0.1 && py > y - 0.1 && py < y + 0.1)
-				{
-					dragParticle = ii;
-					break;
-				}
-			}
-		}
-
-		if (dragParticle < size)
-		{
-			pVector[dragParticle]->m_Position = mouse;
-		}*/
 	} else {
-		printf("test");
-		//dragParticle = pVector.size();
 		if(dragBool) {
+			constraints.pop_back();
 			forces.pop_back();
 			pVector.pop_back();
 			dragBool = false;
@@ -309,7 +299,7 @@ static void key_func(unsigned char key, int x, int y)
 		case '5':
 		case '6':
 			free_data();
-			Scene::setup(pVector, forces, constraints, dragParticle, key-'0');
+			Scene::setup(pVector, forces, constraints, walls, key-'0');
 			break;
 		case '+':
 		case '=':
@@ -382,6 +372,7 @@ static void display_func(void)
 	draw_forces();
 	draw_constraints();
 	draw_particles();
+	draw_walls();
 
 	post_display();
 }
@@ -484,7 +475,7 @@ int main(int argc, char **argv)
 	dump_frames = 0;
 	frame_number = 0;
 
-	Scene::setup(pVector, forces, constraints, dragParticle, 1);
+	Scene::setup(pVector, forces, constraints, walls, 1);
 
 	win_x = 512;
 	win_y = 512;

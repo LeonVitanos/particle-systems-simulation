@@ -52,7 +52,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 		{ //Half euler step
 			initial.push_back(pVector[ii]);
 			pVector[ii]->m_Position += (dt / 2) * pVector[ii]->m_Velocity;					  // xdot=v
-			pVector[ii]->m_Velocity = (dt / 2) * pVector[ii]->m_Force / pVector[ii]->m_Mass; // vdot = f/m
+			pVector[ii]->m_Velocity += (dt / 2) * pVector[ii]->m_Force / pVector[ii]->m_Mass; // vdot = f/m
 		}
 
 		Clear_Forces(pVector);
@@ -62,7 +62,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 		for (ii = 0; ii < size; ii++)
 		{
 			pVector[ii]->m_Position = initial[ii]->m_Position + dt * pVector[ii]->m_Velocity;					 // xdot=v
-			pVector[ii]->m_Velocity = /*initial[ii]->m_Velocity +*/ dt * pVector[ii]->m_Force / pVector[ii]->m_Mass; // vdot = f/m
+			pVector[ii]->m_Velocity = initial[ii]->m_Velocity + dt * pVector[ii]->m_Force / pVector[ii]->m_Mass; // vdot = f/m
 		}
 
 		break;
@@ -85,7 +85,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 			v1.push_back(pVector[ii]->m_Force / pVector[ii]->m_Mass);
 
 			pVector[ii]->m_Position += dt / 2 * p1[ii]; // xdot=v
-			pVector[ii]->m_Velocity = dt / 2 * v1[ii]; // vdot = f/m
+			pVector[ii]->m_Velocity += dt / 2 * v1[ii]; // vdot = f/m
 		}
 
 		Clear_Forces(pVector);
@@ -98,7 +98,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 			v2.push_back(pVector[ii]->m_Force / pVector[ii]->m_Mass);
 
 			pVector[ii]->m_Position = initial[ii]->m_Position + dt / 2 * p2[ii]; // xdot=v
-			pVector[ii]->m_Velocity = /*initial[ii]->m_Velocity +*/ dt / 2 * v2[ii]; // vdot = f/m
+			pVector[ii]->m_Velocity = initial[ii]->m_Velocity + dt / 2 * v2[ii]; // vdot = f/m
 		}
 
 		Clear_Forces(pVector);
@@ -111,7 +111,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 			v3.push_back(pVector[ii]->m_Force / pVector[ii]->m_Mass);
 
 			pVector[ii]->m_Position = initial[ii]->m_Position + dt * p3[ii]; // xdot=v
-			pVector[ii]->m_Velocity = /*initial[ii]->m_Velocity +*/ dt * v3[ii]; // vdot = f/m
+			pVector[ii]->m_Velocity = initial[ii]->m_Velocity + dt * v3[ii]; // vdot = f/m
 		}
 
 		Clear_Forces(pVector);
@@ -124,7 +124,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 			v4.push_back(pVector[ii]->m_Force / pVector[ii]->m_Mass);
 
 			pVector[ii]->m_Position = initial[ii]->m_Position + 1 / 6 * p1[ii] + 1 / 3 * p2[ii] + 1 / 3 * p3[ii] + 1 / 6 * p4[ii]; // xdot=v
-			pVector[ii]->m_Velocity = /*initial[ii]->m_Velocity +*/ 1 / 6 * v1[ii] + 1 / 3 * v2[ii] + 1 / 3 * v3[ii] + 1 / 6 * v4[ii]; // vdot = f/m
+			pVector[ii]->m_Velocity = initial[ii]->m_Velocity + 1 / 6 * v1[ii] + 1 / 3 * v2[ii] + 1 / 3 * v3[ii] + 1 / 6 * v4[ii]; // vdot = f/m
 		}
 		break;
 	}

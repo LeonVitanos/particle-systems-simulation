@@ -1,5 +1,5 @@
 #include "Scene.h"
-void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forces, std::vector<Force *> &constraints, int dragParticle, int scene)
+void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forces, std::vector<Force *> &constraints, std::vector<Wall *> &walls, int scene)
 {
     switch(scene){
         case 1:{
@@ -14,13 +14,15 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
             particles.push_back(new Particle(center + offset));
             particles.push_back(new Particle(center + offset + offset + offset));
 
-            dragParticle = particles.size();
-
             forces.push_back((Force *)new Gravity(particles[0]));
             forces.push_back((Force *)new SpringForce(particles[0], particles[1], dist, 1, 1));
 
             // constraints.push_back((Force *)new CircularWireConstraint(particles[0], center, dist));
             constraints.push_back((Force *)new FixedConstraint(particles[1]));
+
+            //Vec2f p1(0, 0.7);
+            //Vec2f p2(0, -0.7);
+            //walls.push_back(new Wall(p1, p2));
             break;
         }
         case 2:{
@@ -36,8 +38,6 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
             particles.push_back(new Particle(center + offset + offset + offset));
             particles.push_back(new Particle(center + offset + offset + offset + offset));
             //pVector.push_back(new Particle(mouse));
-
-            dragParticle = particles.size();
 
             // Set the spring force
             forces.push_back((Force *)new SpringForce(particles[0], particles[1], dist, 1, 1));
@@ -83,8 +83,6 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
             particles.push_back(new Particle(center + offset));
             // pVector.push_back(new Particle(center + offset + offset + offset + offset));
             //pVector.push_back(new Particle(mouse));
-
-            dragParticle = particles.size();
 
             // Set the spring force
             forces.push_back((Force *)new SpringForce(particles[0], particles[1], dist, 1, 1));
