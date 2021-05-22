@@ -20,9 +20,13 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
             // constraints.push_back((Force *)new CircularWireConstraint(particles[0], center, dist));
             constraints.push_back((Force *)new FixedConstraint(particles[1]));
 
-            //Vec2f p1(0, 0.7);
-            //Vec2f p2(0, -0.7);
-            //walls.push_back(new Wall(p1, p2));
+            Vec2f p1(0, 0.3);
+            Vec2f p2(0, -0.3);
+            walls.push_back(new Wall(p1, p2));
+
+            Vec2f p3(0.3, 0.3);
+            Vec2f p4(0.6, 0.6);
+            walls.push_back(new Wall(p3, p4));
             break;
         }
         case 2:{
@@ -68,6 +72,14 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
                         forces.push_back((Force *)new SpringForce(particles[i * 9 - 9 + j + 4], particles[i * 9 + j + 4], dist/4, 1, 1));
                 }
             }
+
+            Vec2f p1(-0.5, 0.3);
+            Vec2f p2(-0.5, -0.3);
+            walls.push_back(new Wall(p1, p2));
+
+            Vec2f p3(0.5, 0.3);
+            Vec2f p4(0.5, -0.3);
+            walls.push_back(new Wall(p3, p4));
             break;
         }
         case 4:{ // Just a spring

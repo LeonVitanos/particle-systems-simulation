@@ -24,7 +24,7 @@
 /* macros */
 
 /* external definitions (from solver) */
-extern void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> forces, std::vector<Force *> constraints, float dt, int solver);
+extern void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> forces, std::vector<Force *> constraints, std::vector<Wall *> walls, float dt, int solver);
 
 /* global variables */
 
@@ -93,6 +93,7 @@ static void free_data(void)
 	}
 	forces.clear();
 	constraints.clear();
+	walls.clear();
 }
 
 static void clear_data(void)
@@ -201,8 +202,15 @@ static void get_from_UI()
 	i = (int)((mx / (float)win_x) * N);
 	j = (int)(((win_y - my) / (float)win_y) * N);
 
-	if (i < 1 || i > N || j < 1 || j > N)
+	if (i < 1 || i > N || j < 1 || j > N) {
+		if(dragBool) {
+			constraints.pop_back();
+			forces.pop_back();
+			pVector.pop_back();
+			dragBool = false;
+		}
 		return;
+	}
 
 	if (mouse_down[0]) // Left mouse button pressed
 	{
@@ -355,7 +363,7 @@ static void idle_func(void)
 	get_from_UI();
 
 	if (dsim)
-		simulation_step(pVector, forces, constraints, dt, solver);
+		simulation_step(pVector, forces, constraints, walls, dt, solver);
 	else
 	{
 		remap_GUI();

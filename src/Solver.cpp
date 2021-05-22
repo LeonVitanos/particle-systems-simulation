@@ -1,5 +1,6 @@
 #include "Particle.h"
 #include "Force.h"
+#include "Wall.h"
 
 #include <vector>
 
@@ -23,7 +24,7 @@ void Compute_Forces(std::vector<Force *> forces)
 	}
 }
 
-void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> forces, std::vector<Force *> constraints, float dt, int solver)
+void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> forces, std::vector<Force *> constraints, std::vector<Wall *> walls, float dt, int solver)
 {
 	int ii, size = pVector.size();
 
@@ -38,8 +39,62 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 
 		for (ii = 0; ii < size; ii++)
 		{
-			pVector[ii]->m_Position += dt * pVector[ii]->m_Velocity;					// xdot=v
 			pVector[ii]->m_Velocity += dt * pVector[ii]->m_Force / pVector[ii]->m_Mass; // vdot = f/m
+			//pVector[ii]->m_Position += dt * pVector[ii]->m_Velocity;
+
+			// Determine if particle crosses wall
+			float p0_x = pVector[ii]->m_Position[0];
+			float p0_y = pVector[ii]->m_Position[1];
+
+			Vec2f newPos = pVector[ii]->m_Position + dt * pVector[ii]->m_Velocity;
+
+			float p1_x = newPos[0];
+			float p1_y = newPos[1];
+
+			float s1_x = p1_x - p0_x;
+			float s1_y = p1_y - p0_y;
+
+			float mindt = -1;
+			int iWall = -1;
+			int wSize = walls.size();
+			for(int i = 0; i < wSize; i++) {
+				float p2_x = walls[i]->m_p1[0];
+				float p3_x = walls[i]->m_p2[0];
+				float p2_y = walls[i]->m_p1[1];
+				float p3_y = walls[i]->m_p2[1];
+
+				float s2_x = p3_x - p2_x;
+				float s2_y = p3_y - p2_y;
+
+				float d = (-s2_x * s1_y + s1_x * s2_y);
+				if (!(d < 0.0001f && d > -0.0001f)) {
+					float s = (s1_x * (p0_y - p2_y) - s1_y * (p0_x - p2_x)) / d;
+					float t = (s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / d;
+
+					if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
+						if (mindt < 0 || mindt < dt * t) {
+							mindt = dt * t;
+							iWall = i;
+						}
+					}
+				}
+			}
+			
+			if (mindt < 0) {
+				pVector[ii]->m_Position += dt * pVector[ii]->m_Velocity;					// xdot=v
+			} else {
+				//printf("test");
+				newPos = pVector[ii]->m_Position + (mindt - 0.1f) * pVector[ii]->m_Velocity;
+				Vec2f partVeloc = (dt - (mindt - 0.1f)) * pVector[ii]->m_Velocity;
+				Vec2f lineDir = walls[iWall]->m_p1 - walls[iWall]->m_p2;
+				float length = sqrt(pow((walls[iWall]->m_p1[0] - walls[iWall]->m_p2[0]), 2) + pow((walls[iWall]->m_p1[1] - walls[iWall]->m_p2[1]), 2));
+				lineDir = lineDir / length;
+				pVector[ii]->m_Velocity = ((partVeloc * lineDir) / (lineDir * lineDir)) * lineDir;
+				pVector[ii]->m_Position = newPos + pVector[ii]->m_Velocity;
+
+				pVector[ii]->m_Position += dt * pVector[ii]->m_Velocity;
+			}
+
 		}
 
 		break;

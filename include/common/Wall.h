@@ -9,7 +9,6 @@ public:
 
   void draw();
 
-private:
   Vec2f const m_p1;
   Vec2f const m_p2;
 };
