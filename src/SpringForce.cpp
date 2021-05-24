@@ -34,9 +34,8 @@ void SpringForce::calculate()
   Vec2f l = m_p1->m_Position - m_p2->m_Position;
   float dist = norm(l);
   Vec2f l_dot = m_p1->m_Velocity - m_p2->m_Velocity;
-  //std::cout << dist << "  " << this->m_dist << std::endl;
   float test = (m_ks * (dist - this->m_dist) + m_kd * (l_dot * l) / dist);
   this->force = test * (l / dist);
-  m_p1->m_Force -= this->force;
-  m_p2->m_Force += this->force;
-}
+  m_p1->m_Force -= this->force - 0.01*m_p1->m_Velocity;
+  m_p2->m_Force += this->force - 0.01*m_p2->m_Velocity;
+} 

@@ -1,10 +1,14 @@
 #include "Particle.h"
 #include "Force.h"
+#include <chrono>
+#include <ctime>  
+#include <numeric>                                                              
 
 #include <vector>
 
 #define DAMP 0.99f
 #define RAND (((rand() % 2000) / 1000.f) - 1.f)
+std::vector<double> t;
 
 void Clear_Forces(std::vector<Particle *> pVector)
 {
@@ -28,6 +32,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 	int ii, size = pVector.size();
 
 	std::vector<Particle *> initial;
+	auto start = std::chrono::system_clock::now();
 
 	switch (solver)
 	{
@@ -126,6 +131,14 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 			pVector[ii]->m_Position = initial[ii]->m_Position + 1 / 6 * p1[ii] + 1 / 3 * p2[ii] + 1 / 3 * p3[ii] + 1 / 6 * p4[ii]; // xdot=v
 			pVector[ii]->m_Velocity = initial[ii]->m_Velocity + 1 / 6 * v1[ii] + 1 / 3 * v2[ii] + 1 / 3 * v3[ii] + 1 / 6 * v4[ii]; // vdot = f/m
 		}
+		
 		break;
 	}
+
+	//CPU timing
+	auto end = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end-start;
+	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+	t.push_back(elapsed_seconds.count()*1000);
+	//std::cout << "Average " << accumulate( t.begin(), t.end(), 0.0) / t.size() << "ms\n";
 }

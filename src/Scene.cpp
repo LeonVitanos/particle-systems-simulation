@@ -59,13 +59,22 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
                 {
                     particles.push_back(new Particle(center + j * offset));
                     forces.push_back((Force *)new Gravity(particles.back()));
-                    //As a first attempt first row of particles could be fixed point
                     if(i==0)
+                       //Apply fixed constraint on the first row particles
                         constraints.push_back((Force *)new FixedConstraint(particles.back()));
                     if (j != -4)
-                        forces.push_back((Force *)new SpringForce(particles[i * 9 + j + 3], particles[i * 9 + j + 4], dist, 1, 1));
-                    if (i != 0)
-                        forces.push_back((Force *)new SpringForce(particles[i * 9 - 9 + j + 4], particles[i * 9 + j + 4], dist/4, 1, 1));
+                        //spring connecting horizontally
+                        forces.push_back((Force *)new SpringForce(particles[i * 9 + j + 3], particles[i * 9 + j + 4], dist, 0.7, 0.8));
+                    if (i != 0){
+                        //spring connecting vertically
+                        forces.push_back((Force *)new SpringForce(particles[i * 9 - 9 + j + 4], particles[i * 9 + j + 4], dist,0.7, 0.8));
+                        if(j!=4)
+                            //spring connecting diagonally to the right
+                            forces.push_back((Force *)new SpringForce(particles[i * 9 + j + 4], particles[i * 9 + j + 4-8], dist, 0.05, 0.8));
+                        if(j!=-4)
+                            //spring connecting diagonally to the left
+                            forces.push_back((Force *)new SpringForce(particles[i * 9 + j + 4], particles[i * 9 + j + 4-10], dist, 0.05, 0.8));
+                    }
                 }
             }
             break;
