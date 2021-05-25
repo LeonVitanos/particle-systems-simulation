@@ -56,7 +56,7 @@ void Compute_Collision(Particle * particle, Vec2f position, Vec2f velocity, std:
 		float s2_y = p3_y - p2_y;
 
 		float d = (-s2_x * s1_y + s1_x * s2_y);
-		if (!(d == 0)/*(d < 0.0001f && d > -0.0001f)*/) { // if not (near) parallel
+		if (!(d == 0)) { // if not (near) parallel
 			float s = (s1_x * (p0_y - p2_y) - s1_y * (p0_x - p2_x)) / d;
 			float t = (s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / d;
 
