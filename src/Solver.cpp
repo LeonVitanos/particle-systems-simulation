@@ -1,8 +1,8 @@
 #include "Particle.h"
 #include "Force.h"
 #include <chrono>
-#include <ctime>  
-#include <numeric>                                                              
+#include <ctime>
+#include <numeric>
 #include "Wall.h"
 
 #include <vector>
@@ -28,7 +28,7 @@ void Compute_Forces(std::vector<Force *> forces)
 	}
 }
 
-void Compute_Collision(Particle * particle, Vec2f position, Vec2f velocity, std::vector<Wall *> walls, float dt)
+void Compute_Collision(Particle *particle, Vec2f position, Vec2f velocity, std::vector<Wall *> walls, float dt)
 {
 	// Determine if particle crosses wall
 	// Current particle coordinates (position vector)
@@ -48,7 +48,8 @@ void Compute_Collision(Particle * particle, Vec2f position, Vec2f velocity, std:
 	float mindt = -1;
 	int iWall = -1;
 	int wSize = walls.size();
-	for(int i = 0; i < wSize; i++) {
+	for (int i = 0; i < wSize; i++)
+	{
 		//Wall endpoint coordinates (p2 as position vector)
 		float p2_x = walls[i]->m_p1[0];
 		float p3_x = walls[i]->m_p2[0];
@@ -60,25 +61,31 @@ void Compute_Collision(Particle * particle, Vec2f position, Vec2f velocity, std:
 		float s2_y = p3_y - p2_y;
 
 		float d = (-s2_x * s1_y + s1_x * s2_y);
-		if (!(d == 0)) { // if not (near) parallel
+		if (!(d == 0))
+		{ // if not (near) parallel
 			float s = (s1_x * (p0_y - p2_y) - s1_y * (p0_x - p2_x)) / d;
 			float t = (s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / d;
 
-			if (s >= 0 && s <= 1 && t >= 0 && t <= 1) { // if intersecting
-				if (mindt < 0 || mindt < dt * t) {
+			if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+			{ // if intersecting
+				if (mindt < 0 || mindt < dt * t)
+				{
 					mindt = dt * t;
 					iWall = i;
 				}
 			}
 		}
 	}
-	
-	if (mindt < 0) { // if no intersection
-		particle->m_Position = position + dt * velocity;					// xdot=v
-	} else { // if intersection
+
+	if (mindt < 0)
+	{													 // if no intersection
+		particle->m_Position = position + dt * velocity; // xdot=v
+	}
+	else
+	{ // if intersection
 		// Position where particle hits wall
 		newPos = position + (mindt - 0.05f) * velocity;
-		
+
 		// Calculate remaining velocity parallel to the wall
 		Vec2f partVeloc = (dt - (mindt - 0.05f)) * velocity;
 		Vec2f lineDir = walls[iWall]->m_p1 - walls[iWall]->m_p2;
@@ -103,6 +110,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 	case 0: //Euler
 		Clear_Forces(pVector);
 		Compute_Forces(forces);
+		// TODO compute constraints using ConstraintSolver::Calculate(constraints)
 		Compute_Forces(constraints);
 
 		for (ii = 0; ii < size; ii++)
@@ -208,14 +216,14 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 
 			Compute_Collision(pVector[ii], initial[ii]->m_Position, 1 / 6 * p1[ii] + 1 / 3 * p2[ii] + 1 / 3 * p3[ii] + 1 / 6 * p4[ii], walls, 1);
 		}
-		
+
 		break;
 	}
 
 	//CPU timing
 	auto end = std::chrono::system_clock::now();
-	std::chrono::duration<double> elapsed_seconds = end-start;
+	std::chrono::duration<double> elapsed_seconds = end - start;
 	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-	t.push_back(elapsed_seconds.count()*1000);
+	t.push_back(elapsed_seconds.count() * 1000);
 	//std::cout << "Average " << accumulate( t.begin(), t.end(), 0.0) / t.size() << "ms\n";
 }
