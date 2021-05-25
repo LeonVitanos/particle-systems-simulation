@@ -19,6 +19,7 @@ set(HEADER_FILES
         include/common/RodConstraint.h
         include/common/SpringForce.h
         include/common/Wall.h
+        include/common/ConstraintSolver.h
         include/linux/gfx/config.h
         include/linux/gfx/geom3d.h
         include/linux/gfx/geom4d.h
@@ -47,6 +48,7 @@ set(SOURCE_FILES
         src/Force.cpp
         src/Scene.cpp
         src/FixedConstraint.cpp
+        src/ConstraintSolver.cpp
         src/Wall.cpp)
 
 set(LIBRARY_FILES
