@@ -7,11 +7,10 @@ ConstraintSolver::ConstraintSolver(std::vector<Particle *> particles, std::vecto
 
 void ConstraintSolver::calculate()
 {
-    for (auto &constraint : constraints)
+	for (auto &constraint : constraints)
 	{
 		constraint->calculate();
 	}
 
     // First get all the J, J_dot, C, C_dot
-    
 }

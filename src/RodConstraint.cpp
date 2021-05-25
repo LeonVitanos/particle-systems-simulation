@@ -1,4 +1,5 @@
 #include "RodConstraint.h"
+#include "vector"
 
 #if defined(__APPLE__)
 #include <GLUT/glut.h>
@@ -6,7 +7,22 @@
 #include <GL/glut.h>
 #endif
 
-RodConstraint::RodConstraint(Particle *p1, Particle *p2, double dist) : m_p1(p1), m_p2(p2), m_dist(dist) {}
+RodConstraint::RodConstraint(Particle *p1, Particle *p2, double dist) : Force({p1, p2}), m_p1(p1), m_p2(p2), m_dist(dist) {}
+
+float RodConstraint::getC(){
+  return (m_p1->m_Position - m_p2->m_Position) * (m_p1->m_Position - m_p2->m_Position) - m_dist * m_dist;
+}
+float RodConstraint::getCderivative(){
+  return (m_p1->m_Position - m_p2->m_Position) * (m_p1->m_Velocity - m_p2->m_Velocity);
+}
+
+std::vector<Vec2f> RodConstraint::getJ(){
+  return std::vector<Vec2f>{2*(m_p1->m_Position-m_p2->m_Position), 2*(m_p2->m_Position-m_p1->m_Position)};
+}
+
+std::vector<Vec2f> RodConstraint::getJderivative(){
+	return std::vector<Vec2f>{2*(m_p1->m_Velocity -m_p2->m_Velocity), 2*(m_p2->m_Velocity-m_p1->m_Velocity)};
+}
 
 void RodConstraint::calculate()
 {

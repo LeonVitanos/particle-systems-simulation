@@ -1,4 +1,5 @@
 #include "CircularWireConstraint.h"
+#include "vector"
 
 #if defined(__APPLE__)
 #include <GLUT/glut.h>
@@ -20,7 +21,22 @@ static void draw_circle(const Vec2f &vect, float radius)
 	glEnd();
 }
 
-CircularWireConstraint::CircularWireConstraint(Particle *p, const Vec2f &center, const double radius) : m_p(p), m_center(center), m_radius(radius) {}
+CircularWireConstraint::CircularWireConstraint(Particle *p, const Vec2f &center, const double radius) : Force({p}), m_p(p), m_center(center), m_radius(radius) {}
+
+float CircularWireConstraint::getC(){
+	return ((m_p->m_Position - m_center) * (m_p->m_Position - m_center)) - (m_radius * m_radius);
+}
+float CircularWireConstraint::getCderivative(){
+	return 2 * (m_p->m_Velocity * (m_p->m_Position - m_center));
+}
+
+std::vector<Vec2f> CircularWireConstraint::getJ(){
+	return std::vector<Vec2f>{2 * (m_p->m_Position - m_center)};
+}
+
+std::vector<Vec2f> CircularWireConstraint::getJderivative(){
+	return std::vector<Vec2f>{2 * m_p->m_Velocity};
+}
 
 void CircularWireConstraint::calculate()
 {

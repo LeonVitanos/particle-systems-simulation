@@ -1,6 +1,6 @@
 #include "Gravity.h"
 
-Gravity::Gravity(Particle *particle)
+Gravity::Gravity(Particle *particle):Force({particle})
 {
     p = particle;
 }
