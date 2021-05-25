@@ -4,6 +4,7 @@
 #include <ctime>
 #include <numeric>
 #include "Wall.h"
+#include "ConstraintSolver.h"
 
 #include <vector>
 
@@ -110,8 +111,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 	case 0: //Euler
 		Clear_Forces(pVector);
 		Compute_Forces(forces);
-		// TODO compute constraints using ConstraintSolver::Calculate(constraints)
-		Compute_Forces(constraints);
+		ConstraintSolver(pVector, constraints).calculate();
 
 		for (ii = 0; ii < size; ii++)
 		{
@@ -124,7 +124,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 	case 1: //MidPoint
 		Clear_Forces(pVector);
 		Compute_Forces(forces);
-		Compute_Forces(constraints);
+		ConstraintSolver(pVector, constraints).calculate();
 
 		for (ii = 0; ii < size; ii++)
 		{ //Half euler step
@@ -137,7 +137,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 
 		Clear_Forces(pVector);
 		Compute_Forces(forces);
-		Compute_Forces(constraints);
+		ConstraintSolver(pVector, constraints).calculate();
 
 		for (ii = 0; ii < size; ii++)
 		{
@@ -160,7 +160,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 		}
 
 		Compute_Forces(forces);
-		Compute_Forces(constraints);
+		ConstraintSolver(pVector, constraints).calculate();
 
 		for (ii = 0; ii < size; ii++)
 		{
@@ -175,7 +175,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 
 		Clear_Forces(pVector);
 		Compute_Forces(forces);
-		Compute_Forces(constraints);
+		ConstraintSolver(pVector, constraints).calculate();
 
 		for (ii = 0; ii < size; ii++)
 		{
@@ -190,7 +190,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 
 		Clear_Forces(pVector);
 		Compute_Forces(forces);
-		Compute_Forces(constraints);
+		ConstraintSolver(pVector, constraints).calculate();
 
 		for (ii = 0; ii < size; ii++)
 		{
@@ -205,7 +205,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 
 		Clear_Forces(pVector);
 		Compute_Forces(forces);
-		Compute_Forces(constraints);
+		ConstraintSolver(pVector, constraints).calculate();
 
 		for (ii = 0; ii < size; ii++)
 		{
