@@ -61,6 +61,7 @@ enum MENU_TYPE
 	MENU_EULER,
 	MENU_MIDPOINT,
 	MENU_RUNGE_KUTTA,
+	MENU_IMPLICIT,
 };
 MENU_TYPE show = MENU_EULER;
 
@@ -400,6 +401,7 @@ void menu(int item)
 	case MENU_EULER:
 	case MENU_MIDPOINT:
 	case MENU_RUNGE_KUTTA:
+	case MENU_IMPLICIT:
 	{
 		show = (MENU_TYPE)item;
 	}
@@ -424,6 +426,7 @@ static void open_glut_window(void)
 	glutAddMenuEntry("Euler", MENU_EULER);
 	glutAddMenuEntry("Midpoint", MENU_MIDPOINT);
 	glutAddMenuEntry("RungeKutta", MENU_RUNGE_KUTTA);
+	glutAddMenuEntry("Implicit", MENU_IMPLICIT);
 
 	// Associate a mouse button with menu
 	glutAttachMenu(GLUT_RIGHT_BUTTON);

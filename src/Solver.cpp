@@ -141,6 +141,7 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 
 		break;
 	case 2: //RungeKutta
+	{
 		std::vector<Vec2f> p1, p2, p3, p4, v1, v2, v3, v4;
 
 		Clear_Forces(pVector);
@@ -209,6 +210,9 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 			Compute_Collision(pVector[ii], initial[ii]->m_Position, 1 / 6 * p1[ii] + 1 / 3 * p2[ii] + 1 / 3 * p3[ii] + 1 / 6 * p4[ii], walls, 1);
 		}
 		
+		break;
+	}
+	case 3: // Implicit
 		break;
 	}
 
