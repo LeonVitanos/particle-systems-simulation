@@ -1,6 +1,6 @@
 #include "FixedConstraint.h"
 
-FixedConstraint::FixedConstraint(Particle *particle): Force({particle})
+FixedConstraint::FixedConstraint(Particle *particle)
 {
     p = particle;
 }

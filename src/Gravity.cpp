@@ -6,15 +6,17 @@
 #include <GL/glut.h>
 #endif
 
-Gravity::Gravity(Particle *particle):Force({particle})
+Gravity::Gravity(Particle *particle)
 {
     p = particle;
 }
 
 Gravity::~Gravity() {}
 
-void Gravity::draw(bool draw[]){
-    if (draw[0]) {
+void Gravity::draw(bool draw[])
+{
+    if (draw[0])
+    {
         glBegin(GL_LINES);
         glColor3f(0.0, 1.0, 0.0);
         glVertex2f(p->m_Position[0], p->m_Position[1]);
@@ -35,5 +37,5 @@ void Gravity::draw(bool draw[]){
 void Gravity::calculate()
 {
     this->force = Vec2f(0, -(p->m_Mass * 9.81f * 0.0001f));
-    p->m_Force += this->force - p->m_Velocity*0.01;
+    p->m_Force += this->force - p->m_Velocity * 0.01;
 }

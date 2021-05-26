@@ -7,22 +7,7 @@
 #include <GL/glut.h>
 #endif
 
-RodConstraint::RodConstraint(Particle *p1, Particle *p2, double dist) : Force({p1, p2}), m_p1(p1), m_p2(p2), m_dist(dist) {}
-
-float RodConstraint::getC(){
-  return (m_p1->m_Position - m_p2->m_Position) * (m_p1->m_Position - m_p2->m_Position) - m_dist * m_dist;
-}
-float RodConstraint::getCderivative(){
-  return (m_p1->m_Position - m_p2->m_Position) * (m_p1->m_Velocity - m_p2->m_Velocity);
-}
-
-std::vector<Vec2f> RodConstraint::getJ(){
-  return std::vector<Vec2f>{2*(m_p1->m_Position-m_p2->m_Position), 2*(m_p2->m_Position-m_p1->m_Position)};
-}
-
-std::vector<Vec2f> RodConstraint::getJderivative(){
-	return std::vector<Vec2f>{2*(m_p1->m_Velocity -m_p2->m_Velocity), 2*(m_p2->m_Velocity-m_p1->m_Velocity)};
-}
+RodConstraint::RodConstraint(Particle *p1, Particle *p2, double dist) : m_p1(p1), m_p2(p2), m_dist(dist) {}
 
 void RodConstraint::calculate()
 {
@@ -34,7 +19,7 @@ void RodConstraint::calculate()
   Vec4f position = Vec4f(position1[0], position1[1], position2[0], position2[1]);
   Vec4f Q = Vec4f(m_p1->m_Force[0], m_p1->m_Force[1], m_p2->m_Force[0], m_p2->m_Force[1]);
   //Mat4 W = Mat4(Vec4f(1 / m_p1->m_Mass, 0, 0, 0), Vec4f(0, 1 / m_p1->m_Mass, 0, 0),
-                //Vec4f(0, 0, 1 / m_p2->m_Mass, 0), Vec4f(0, 0, 0, 1 / m_p2->m_Mass));
+  //Vec4f(0, 0, 1 / m_p2->m_Mass, 0), Vec4f(0, 0, 0, 1 / m_p2->m_Mass));
 
   Vec4f J = Vec4f(2 * (position1[0] - position2[0]), 2 * (position1[1] - position2[1]),
                   2 * (position2[0] - position1[0]), 2 * (position2[1] - position1[1]));
@@ -46,8 +31,8 @@ void RodConstraint::calculate()
   //float JWJ = J[0] * W[0][0] * J[0] + J[1] * W[1][1] * J[1] + J[2] * W[2][2] * J[2] + J[3] * W[3][3] * J[3];
   //float JWQ = J[0] * W[0][0] * Q[0] + J[1] * W[1][1] * Q[1] + J[2] * W[2][2] * Q[2] + J[3] * W[3][3] * Q[3];
   //Since both particles have the same mass
-  float JWJ = J*(1 / m_p1->m_Mass)*J;
-  float JWQ = J*(1 / m_p1->m_Mass)*Q;
+  float JWJ = J * (1 / m_p1->m_Mass) * J;
+  float JWQ = J * (1 / m_p1->m_Mass) * Q;
   float Jdotqdot = Jdot[0] * velocity1[0] + Jdot[1] * velocity1[1] + Jdot[2] * velocity2[0] + Jdot[3] * velocity2[1];
   float lambda = (0 - Jdotqdot - JWQ - C - Cdot) / JWJ;
 
@@ -66,7 +51,8 @@ void RodConstraint::draw(bool draw[])
   glVertex2f(m_p2->m_Position[0], m_p2->m_Position[1]);
   glEnd();
 
-  if (draw[2]) {
+  if (draw[2])
+  {
     const double h = 0.03;
 
     glBegin(GL_LINES);

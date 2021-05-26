@@ -7,7 +7,7 @@
 #include <GL/glut.h>
 #endif
 
-SpringForce::SpringForce(Particle *p1, Particle *p2, double dist, double ks, double kd) : Force({p1, p2}), m_p1(p1), m_p2(p2), m_dist(dist), m_ks(ks), m_kd(kd) {}
+SpringForce::SpringForce(Particle *p1, Particle *p2, double dist, double ks, double kd) : m_p1(p1), m_p2(p2), m_dist(dist), m_ks(ks), m_kd(kd) {}
 
 void SpringForce::draw(bool draw[])
 {
@@ -18,7 +18,8 @@ void SpringForce::draw(bool draw[])
   glVertex2f(m_p2->m_Position[0], m_p2->m_Position[1]);
   glEnd();
 
-  if (draw[1]) {
+  if (draw[1])
+  {
     const double h = 0.03;
 
     glBegin(GL_LINES);
@@ -76,6 +77,6 @@ void SpringForce::calculate()
   Vec2f l_dot = m_p1->m_Velocity - m_p2->m_Velocity;
   float test = (m_ks * (dist - this->m_dist) + m_kd * (l_dot * l) / dist);
   this->force = test * (l / dist);
-  m_p1->m_Force -= this->force - 0.01*m_p1->m_Velocity;
-  m_p2->m_Force += this->force - 0.01*m_p2->m_Velocity;
-} 
+  m_p1->m_Force -= this->force - 0.01 * m_p1->m_Velocity;
+  m_p2->m_Force += this->force - 0.01 * m_p2->m_Velocity;
+}
