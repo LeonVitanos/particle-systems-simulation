@@ -33,6 +33,9 @@ void AngularSpringForce::calculate()
 
     // Final spring computation
     Vec2f force = (m_ks * (norm(p1p3) - cos_dist) + m_kd * (p1p3 * v1v3) / norm(p1p3)) * (p1p3 / norm(p1p3));
+
+    this->force = force;
+
     m_p1->m_Force += force - m_p1->m_Velocity * 0.1;
     m_p3->m_Force += force - m_p1->m_Velocity * 0.1;
 }
@@ -46,21 +49,21 @@ void AngularSpringForce::draw(bool draw[])
     glVertex2f(m_p3->m_Position[0], m_p3->m_Position[1]);
     glEnd();
 
-    /*if (draw[6])
+    if (draw[6])
     {
         const double h = 0.03;
 
         glBegin(GL_LINES);
-        glColor3f(0.0, 0.0, 1.0);
+        glColor3f(0.0, 0.6, 1.0);
         glVertex2f(m_p1->m_Position[0], m_p1->m_Position[1]);
-        glColor3f(0.0, 0.0, 1.0);
-        glVertex2f(m_p1->m_Position[0] + 50 * -this->force[0], m_p1->m_Position[1] + 50 * -this->force[1]);
+        glColor3f(0.0, 0.6, 1.0);
+        glVertex2f(m_p1->m_Position[0] + 50 * this->force[0], m_p1->m_Position[1] + 50 * this->force[1]);
         glEnd();
 
         glPushMatrix();
-        glTranslatef(m_p1->m_Position[0] + 50 * -this->force[0], m_p1->m_Position[1] + 50 * -this->force[1], 0.0);
-        glRotatef((atan2(-this->force[1], -this->force[0]) * 180) / 3.14159265, 0.0, 0.0, 1.0);
-        glColor3f(0.0, 0.0, 1.0);
+        glTranslatef(m_p1->m_Position[0] + 50 * this->force[0], m_p1->m_Position[1] + 50 * this->force[1], 0.0);
+        glRotatef((atan2(this->force[1], this->force[0]) * 180) / 3.14159265, 0.0, 0.0, 1.0);
+        glColor3f(0.0, 0.6, 1.0);
         glBegin(GL_TRIANGLES);
         glVertex2f(-h / 2.0, -h / 2.0);
         glVertex2f(h / 1.0, 0.0);
@@ -69,21 +72,21 @@ void AngularSpringForce::draw(bool draw[])
         glPopMatrix();
 
         glBegin(GL_LINES);
-        glColor3f(1.0, 0.0, 0.0);
+        glColor3f(1.0, 0.6, 0.0);
         glVertex2f(m_p2->m_Position[0], m_p2->m_Position[1]);
-        glColor3f(1.0, 0.0, 0.0);
+        glColor3f(1.0, 0.6, 0.0);
         glVertex2f(m_p2->m_Position[0] + 50 * this->force[0], m_p2->m_Position[1] + 50 * this->force[1]);
         glEnd();
 
         glPushMatrix();
         glTranslatef(m_p2->m_Position[0] + 50 * this->force[0], m_p2->m_Position[1] + 50 * this->force[1], 0.0);
         glRotatef((atan2(this->force[1], this->force[0]) * 180) / 3.14159265, 0.0, 0.0, 1.0);
-        glColor3f(1.0, 0.0, 0.0);
+        glColor3f(1.0, 0.6, 0.0);
         glBegin(GL_TRIANGLES);
         glVertex2f(-h / 2.0, -h / 2.0);
         glVertex2f(h / 1.0, 0.0);
         glVertex2f(-h / 2.0, h / 2.0);
         glEnd();
         glPopMatrix();
-    }*/
+    }
 }
