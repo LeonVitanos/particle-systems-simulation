@@ -21,22 +21,7 @@ static void draw_circle(const Vec2f &vect, float radius)
 	glEnd();
 }
 
-CircularWireConstraint::CircularWireConstraint(Particle *p, const Vec2f &center, const double radius) : Force({p}), m_p(p), m_center(center), m_radius(radius) {}
-
-float CircularWireConstraint::getC(){
-	return ((m_p->m_Position - m_center) * (m_p->m_Position - m_center)) - (m_radius * m_radius);
-}
-float CircularWireConstraint::getCderivative(){
-	return 2 * (m_p->m_Velocity * (m_p->m_Position - m_center));
-}
-
-std::vector<Vec2f> CircularWireConstraint::getJ(){
-	return std::vector<Vec2f>{2 * (m_p->m_Position - m_center)};
-}
-
-std::vector<Vec2f> CircularWireConstraint::getJderivative(){
-	return std::vector<Vec2f>{2 * m_p->m_Velocity};
-}
+CircularWireConstraint::CircularWireConstraint(Particle *p, const Vec2f &center, const double radius) : m_p(p), m_center(center), m_radius(radius) {}
 
 void CircularWireConstraint::calculate()
 {
@@ -66,8 +51,8 @@ void CircularWireConstraint::calculate()
 	// Vector-Matrix-Vector multiplication so get ready for ugly code
 	//float JWQ = J[0] * W[0][0] * Q[0] + J[1] * W[1][1] * Q[1];
 	//float JWJ = J[0] * W[0][0] * J[0] + J[1] * W[1][1] * J[1];
-	float JWQ = J*(1 / m_p->m_Mass)*Q;
-	float JWJ = J*(1 / m_p->m_Mass)*J;
+	float JWQ = J * (1 / m_p->m_Mass) * Q;
+	float JWJ = J * (1 / m_p->m_Mass) * J;
 	float lambda = (-J_dot_q_dot - JWQ - C - C_dot) / JWJ;
 
 	this->force[0] = lambda * J[0];
@@ -81,7 +66,8 @@ void CircularWireConstraint::draw(bool draw[])
 {
 	draw_circle(m_center, m_radius);
 
-	if (draw[3]) {
+	if (draw[3])
+	{
 		const double h = 0.03;
 
 		glBegin(GL_LINES);

@@ -68,7 +68,7 @@ MENU_TYPE show = MENU_EULER;
 int dragParticle;
 bool dragBool = false;
 
-bool drawForces [5] = {false, false, false, false, false};
+bool drawForces [7] = {false, false, false, false, false, false, false};
 bool drawAccForce = false;
 bool drawVel = false;
 
@@ -326,9 +326,6 @@ static void key_func(unsigned char key, int x, int y)
 				dt-=0.05;
 			std::cout << "dt = " << dt << std::endl;
 			break;
-		case '6':
-			drawForces[4] = !drawForces[4];
-			break;
 		case '7':
 			drawForces[0] = !drawForces[0];
 			break;
@@ -340,6 +337,17 @@ static void key_func(unsigned char key, int x, int y)
 			break;
 		case '0':
 			drawForces[3] = !drawForces[3];
+			break;
+		case '6':
+			drawForces[4] = !drawForces[4];
+			break;
+		case 'a':
+		case 'A':
+			drawForces[5] = !drawForces[5];
+			break;
+		case 'z':
+		case 'Z':
+			drawForces[6] = !drawForces[6];
 			break;
 		case 'f':
 		case 'F':

@@ -12,11 +12,13 @@ find_package(PNG REQUIRED)
 include_directories(library ${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
 
 set(HEADER_FILES
+        include/common/AngularSpringForce.h
         include/common/CircularWireConstraint.h
         include/common/imageio.h
         include/common/linearSolver.h
         include/common/Particle.h
         include/common/RodConstraint.h
+        include/common/SlidingConstraint.h
         include/common/SpringForce.h
         include/common/Wall.h
         include/common/ConstraintSolver.h
@@ -36,6 +38,7 @@ set(HEADER_FILES
         include/linux/gfx/vec4.h)
 
 set(SOURCE_FILES
+        src/AngularSpringForce.cpp
         src/CircularWireConstraint.cpp
         src/imageio.cpp
         src/linearSolver.cpp
@@ -47,6 +50,7 @@ set(SOURCE_FILES
         src/Gravity.cpp
         src/Force.cpp
         src/Scene.cpp
+        src/SlidingConstraint.cpp
         src/FixedConstraint.cpp
         src/ConstraintSolver.cpp
         src/Wall.cpp)
