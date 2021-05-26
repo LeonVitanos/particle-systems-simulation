@@ -40,10 +40,10 @@ void RodConstraint::calculate()
   float Jdotqdot = Jdot[0] * velocity1[0] + Jdot[1] * velocity1[1] + Jdot[2] * velocity2[0] + Jdot[3] * velocity2[1];
   float lambda = (0 - Jdotqdot - JWQ - C - Cdot) / JWJ;
 
-  f1[0] = m_p1->m_Force[0];
-  f1[1] = m_p1->m_Force[1];
-  f2[0] = m_p2->m_Force[0];
-  f2[1] = m_p2->m_Force[1];
+  f1[0] = lambda * J[0];
+  f1[1] = lambda * J[1];
+  f2[0] = lambda * J[2];
+  f2[1] = lambda * J[3];
 
   m_p1->m_Force[0] += lambda * J[0];
   m_p1->m_Force[1] += lambda * J[1];

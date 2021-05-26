@@ -6,26 +6,34 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
 
     switch (scene)
     {
-    case 1:
+    case 1: // Simple Spring
+    {        
+        const double dist = 0.6;
+        const Vec2f center(0.0, 0.0);
+        const Vec2f offset(0.9, 0.0);
+
+        particles.push_back(new Particle(center - offset));
+        particles.push_back(new Particle(center + offset));
+
+        forces.push_back((Force *)new SpringForce(particles[0], particles[1], dist, 1, 1));
+        break;
+    }
+    case 2: // Spring with FixedConstraint (Pendulum)
     {
-        const double dist = 0.2;
+        const double dist = 0.3;
         const Vec2f center(0.0, 0.0);
         const Vec2f offset(dist, 0.0);
 
-        // Create three particles, attach them to each other, then add a
-        // circular wire constraint to the first.
-
-        particles.push_back(new Particle(center + offset));
-        particles.push_back(new Particle(center + offset + offset + offset));
+        particles.push_back(new Particle(center - 2 * offset));
+        particles.push_back(new Particle(center));
 
         forces.push_back((Force *)new Gravity(particles[0]));
         forces.push_back((Force *)new SpringForce(particles[0], particles[1], dist, 1, 1));
 
-        // constraints.push_back((Force *)new CircularWireConstraint(particles[0], center, dist));
         constraints.push_back((Force *)new FixedConstraint(particles[1]));
         break;
     }
-    case 2:
+    case 3:
     {
         const double dist = 0.2;
         const Vec2f center(0.0, 0.0);
@@ -49,7 +57,7 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
         constraints.push_back((Force *)new RodConstraint(particles[1], particles[2], dist * 2));
         break;
     }
-    case 3:
+    case 4:
     { // Cloth
         const double dist = 0.05;
         Vec2f center(0.0, 0.0);
@@ -97,7 +105,7 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
         walls.push_back(new Wall(p3, p4));
         break;
     }
-    case 4:
+    case 5:
     {
         // Angular spring
 
