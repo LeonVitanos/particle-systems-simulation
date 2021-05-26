@@ -13,7 +13,7 @@ public:
     Force(std::vector<Particle*> particles);
     virtual ~Force(void);
 
-    virtual void draw();
+    virtual void draw(bool draw[]);
     virtual void calculate();
 
     std::vector<Particle*> particles;

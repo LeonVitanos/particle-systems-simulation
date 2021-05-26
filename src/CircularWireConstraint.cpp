@@ -74,7 +74,29 @@ void CircularWireConstraint::calculate()
 	m_p->m_Force[1] += lambda * J[1];
 }
 
-void CircularWireConstraint::draw()
+void CircularWireConstraint::draw(bool draw[])
 {
 	draw_circle(m_center, m_radius);
+
+	if (draw[3]) {
+		const double h = 0.03;
+
+		glBegin(GL_LINES);
+		glColor3f(1.0, 0.0, 1.0);
+		glVertex2f(m_p->m_Position[0], m_p->m_Position[1]);
+		glColor3f(1.0, 0.0, 1.0);
+		glVertex2f(m_p->m_Position[0] + 50 * m_p->m_Force[0], m_p->m_Position[1] + 50 * m_p->m_Force[1]);
+		glEnd();
+
+		glPushMatrix();
+		glTranslatef(m_p->m_Position[0] + 50 * m_p->m_Force[0], m_p->m_Position[1] + 50 * m_p->m_Force[1], 0.0);
+		glRotatef((atan2(m_p->m_Force[1], m_p->m_Force[0]) * 180) / 3.14159265, 0.0, 0.0, 1.0);
+		glColor3f(1.0, 0.0, 1.0);
+		glBegin(GL_TRIANGLES);
+		glVertex2f(-h / 2.0, -h / 2.0);
+		glVertex2f(h / 1.0, 0.0);
+		glVertex2f(-h / 2.0, h / 2.0);
+		glEnd();
+		glPopMatrix();
+	}
 }

@@ -8,7 +8,7 @@ class FixedConstraint : Force
 public:
     FixedConstraint(Particle *p);
 
-    void draw() override;
+    void draw(bool draw[]) override;
     void calculate() override;
     Particle *p;
 };

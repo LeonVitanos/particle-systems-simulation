@@ -8,7 +8,7 @@ class CircularWireConstraint : Force
 public:
   CircularWireConstraint(Particle *p, const Vec2f &center, const double radius);
 
-  void draw() override;
+  void draw(bool draw[]) override;
   void calculate() override;
   float getC() override;
   float getCderivative() override;

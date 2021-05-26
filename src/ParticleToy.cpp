@@ -68,6 +68,8 @@ MENU_TYPE show = MENU_EULER;
 int dragParticle;
 bool dragBool = false;
 
+bool drawForce [4] = {false, false, false, false};
+
 /*
 ----------------------------------------------------------------------
 free/clear/allocate simulation data
@@ -165,7 +167,7 @@ static void draw_forces(void)
 {
 	for (auto force : forces)
 	{
-		force->draw();
+		force->draw(drawForce);
 	}
 }
 
@@ -173,7 +175,7 @@ static void draw_constraints(void)
 {
 	for (auto constraint : constraints)
 	{
-		constraint->draw();
+		constraint->draw(drawForce);
 	}
 }
 
@@ -321,6 +323,18 @@ static void key_func(unsigned char key, int x, int y)
 			else
 				dt-=0.05;
 			std::cout << "dt = " << dt << std::endl;
+			break;
+		case '7':
+			drawForce[0] = !drawForce[0];
+			break;
+		case '8':
+			drawForce[1] = !drawForce[1];
+			break;
+		case '9':
+			drawForce[2] = !drawForce[2];
+			break;
+		case '0':
+			drawForce[3] = !drawForce[3];
 			break;
 		}
 }

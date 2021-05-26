@@ -5,7 +5,7 @@ FixedConstraint::FixedConstraint(Particle *particle): Force({particle})
     p = particle;
 }
 
-void FixedConstraint::draw() {}
+void FixedConstraint::draw(bool draw[]) {}
 
 void FixedConstraint::calculate()
 {

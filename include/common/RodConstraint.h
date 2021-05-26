@@ -8,7 +8,7 @@ class RodConstraint : Force
 public:
   RodConstraint(Particle *p1, Particle *p2, double dist);
 
-  void draw() override;
+  void draw(bool draw[]) override;
   void calculate() override;
   float getC() override;
   float getCderivative() override;

@@ -32,6 +32,10 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
             particles.push_back(new Particle(center + offset + offset + offset));
             particles.push_back(new Particle(center + offset + offset + offset + offset));
 
+            forces.push_back((Force *)new Gravity(particles[0]));
+            forces.push_back((Force *)new Gravity(particles[1]));
+            forces.push_back((Force *)new Gravity(particles[2]));
+
             // Set the spring force
             forces.push_back((Force *)new SpringForce(particles[0], particles[1], dist, 1, 1));
 
