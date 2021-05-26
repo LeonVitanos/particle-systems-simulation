@@ -70,6 +70,9 @@ void CircularWireConstraint::calculate()
 	float JWJ = J*(1 / m_p->m_Mass)*J;
 	float lambda = (-J_dot_q_dot - JWQ - C - C_dot) / JWJ;
 
+	this->force[0] = lambda * J[0];
+	this->force[1] = lambda * J[1];
+
 	m_p->m_Force[0] += lambda * J[0];
 	m_p->m_Force[1] += lambda * J[1];
 }
@@ -85,12 +88,12 @@ void CircularWireConstraint::draw(bool draw[])
 		glColor3f(1.0, 0.0, 1.0);
 		glVertex2f(m_p->m_Position[0], m_p->m_Position[1]);
 		glColor3f(1.0, 0.0, 1.0);
-		glVertex2f(m_p->m_Position[0] + 50 * m_p->m_Force[0], m_p->m_Position[1] + 50 * m_p->m_Force[1]);
+		glVertex2f(m_p->m_Position[0] + 50 * this->force[0], m_p->m_Position[1] + 50 * this->force[1]);
 		glEnd();
 
 		glPushMatrix();
-		glTranslatef(m_p->m_Position[0] + 50 * m_p->m_Force[0], m_p->m_Position[1] + 50 * m_p->m_Force[1], 0.0);
-		glRotatef((atan2(m_p->m_Force[1], m_p->m_Force[0]) * 180) / 3.14159265, 0.0, 0.0, 1.0);
+		glTranslatef(m_p->m_Position[0] + 50 * this->force[0], m_p->m_Position[1] + 50 * this->force[1], 0.0);
+		glRotatef((atan2(this->force[1], this->force[0]) * 180) / 3.14159265, 0.0, 0.0, 1.0);
 		glColor3f(1.0, 0.0, 1.0);
 		glBegin(GL_TRIANGLES);
 		glVertex2f(-h / 2.0, -h / 2.0);

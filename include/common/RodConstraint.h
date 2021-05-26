@@ -19,4 +19,6 @@ private:
   Particle *const m_p1;
   Particle *const m_p2;
   double const m_dist;
+  Vec2f f1;
+  Vec2f f2;
 };

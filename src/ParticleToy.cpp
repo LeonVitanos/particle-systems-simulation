@@ -68,7 +68,10 @@ MENU_TYPE show = MENU_EULER;
 int dragParticle;
 bool dragBool = false;
 
-bool drawForce [4] = {false, false, false, false};
+bool drawForces [5] = {false, false, false, false, false};
+bool drawAccForce = false;
+bool drawVel = false;
+
 
 /*
 ----------------------------------------------------------------------
@@ -159,7 +162,7 @@ static void draw_particles(void)
 
 	for (int ii = 0; ii < size; ii++)
 	{
-		pVector[ii]->draw();
+		pVector[ii]->draw(drawAccForce, drawVel);
 	}
 }
 
@@ -167,7 +170,7 @@ static void draw_forces(void)
 {
 	for (auto force : forces)
 	{
-		force->draw(drawForce);
+		force->draw(drawForces);
 	}
 }
 
@@ -175,7 +178,7 @@ static void draw_constraints(void)
 {
 	for (auto constraint : constraints)
 	{
-		constraint->draw(drawForce);
+		constraint->draw(drawForces);
 	}
 }
 
@@ -308,7 +311,6 @@ static void key_func(unsigned char key, int x, int y)
 		case '3':
 		case '4':
 		case '5':
-		case '6':
 			free_data();
 			Scene::setup(pVector, forces, constraints, walls, key-'0');
 			break;
@@ -324,17 +326,28 @@ static void key_func(unsigned char key, int x, int y)
 				dt-=0.05;
 			std::cout << "dt = " << dt << std::endl;
 			break;
+		case '6':
+			drawForces[4] = !drawForces[4];
+			break;
 		case '7':
-			drawForce[0] = !drawForce[0];
+			drawForces[0] = !drawForces[0];
 			break;
 		case '8':
-			drawForce[1] = !drawForce[1];
+			drawForces[1] = !drawForces[1];
 			break;
 		case '9':
-			drawForce[2] = !drawForce[2];
+			drawForces[2] = !drawForces[2];
 			break;
 		case '0':
-			drawForce[3] = !drawForce[3];
+			drawForces[3] = !drawForces[3];
+			break;
+		case 'f':
+		case 'F':
+			drawAccForce = !drawAccForce;
+			break;
+		case 'v':
+		case 'V':
+			drawVel = !drawVel;
 			break;
 		}
 }

@@ -7,7 +7,13 @@
 #include <GL/glut.h>
 #endif
 
-RodConstraint::RodConstraint(Particle *p1, Particle *p2, double dist) : Force({p1, p2}), m_p1(p1), m_p2(p2), m_dist(dist) {}
+
+
+RodConstraint::RodConstraint(Particle *p1, Particle *p2, double dist) : Force({p1, p2}), m_p1(p1), m_p2(p2), m_dist(dist) {
+  Vec2f force(0, 0);
+  f1 = force;
+  f2 = force;
+}
 
 float RodConstraint::getC(){
   return (m_p1->m_Position - m_p2->m_Position) * (m_p1->m_Position - m_p2->m_Position) - m_dist * m_dist;
@@ -51,6 +57,11 @@ void RodConstraint::calculate()
   float Jdotqdot = Jdot[0] * velocity1[0] + Jdot[1] * velocity1[1] + Jdot[2] * velocity2[0] + Jdot[3] * velocity2[1];
   float lambda = (0 - Jdotqdot - JWQ - C - Cdot) / JWJ;
 
+  f1[0] = m_p1->m_Force[0];
+  f1[1] = m_p1->m_Force[1];
+  f2[0] = m_p2->m_Force[0];
+  f2[1] = m_p2->m_Force[1];
+
   m_p1->m_Force[0] += lambda * J[0];
   m_p1->m_Force[1] += lambda * J[1];
   m_p2->m_Force[0] += lambda * J[2];
@@ -73,12 +84,12 @@ void RodConstraint::draw(bool draw[])
     glColor3f(0.0, 1.0, 1.0);
     glVertex2f(m_p1->m_Position[0], m_p1->m_Position[1]);
     glColor3f(0.0, 1.0, 1.0);
-    glVertex2f(m_p1->m_Position[0] + 50 * m_p1->m_Force[0], m_p1->m_Position[1] + 50 * m_p1->m_Force[1]);
+    glVertex2f(m_p1->m_Position[0] + 50 * f1[0], m_p1->m_Position[1] + 50 * f1[1]);
     glEnd();
 
     glPushMatrix();
-    glTranslatef(m_p1->m_Position[0] + 50 * m_p1->m_Force[0], m_p1->m_Position[1] + 50 * m_p1->m_Force[1], 0.0);
-    glRotatef((atan2(m_p1->m_Force[1], m_p1->m_Force[0]) * 180) / 3.14159265, 0.0, 0.0, 1.0);
+    glTranslatef(m_p1->m_Position[0] + 50 * f1[0], m_p1->m_Position[1] + 50 * f1[1], 0.0);
+    glRotatef((atan2(f1[1], f1[0]) * 180) / 3.14159265, 0.0, 0.0, 1.0);
     glColor3f(0.0, 1.0, 1.0);
     glBegin(GL_TRIANGLES);
     glVertex2f(-h / 2.0, -h / 2.0);
@@ -91,12 +102,12 @@ void RodConstraint::draw(bool draw[])
     glColor3f(1.0, 1.0, 0.0);
     glVertex2f(m_p2->m_Position[0], m_p2->m_Position[1]);
     glColor3f(1.0, 1.0, 0.0);
-    glVertex2f(m_p2->m_Position[0] + 50 * m_p2->m_Force[0], m_p2->m_Position[1] + 50 * m_p2->m_Force[1]);
+    glVertex2f(m_p2->m_Position[0] + 50 * f2[0], m_p2->m_Position[1] + 50 * f2[1]);
     glEnd();
 
     glPushMatrix();
-    glTranslatef(m_p2->m_Position[0] + 50 * m_p2->m_Force[0], m_p2->m_Position[1] + 50 * m_p2->m_Force[1], 0.0);
-    glRotatef((atan2(m_p2->m_Force[1], m_p2->m_Force[0]) * 180) / 3.14159265, 0.0, 0.0, 1.0);
+    glTranslatef(m_p2->m_Position[0] + 50 * f2[0], m_p2->m_Position[1] + 50 * f2[1], 0.0);
+    glRotatef((atan2(f2[1], f2[0]) * 180) / 3.14159265, 0.0, 0.0, 1.0);
     glColor3f(1.0, 1.0, 0.0);
     glBegin(GL_TRIANGLES);
     glVertex2f(-h / 2.0, -h / 2.0);
