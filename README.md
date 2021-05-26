@@ -4,17 +4,14 @@ Simulation in Computer Graphics Project Part 1
 
 ## Running
 
-### Mac
+### Makefile (Mac, VS Code)
 
-- On mac, make sure to `brew install libpng` and install C/C++ and MakeFile Tools packages
-- Change the non-Windows flags to `CXX_EXTRA_FLAGS = -framework GLUT -framework OpenGL -lpng`
+- Make sure to `brew install libpng` and install C/C++ and MakeFile Tools packages
+- Run using the makefile extension
 
-### Windows
+### CMake (Linux, VS Code)
 
-- Replace all `<GLUT/glut.h>` by `<GL/glut.h>` (or just GLUT -> GL)
-- Make sure your msys and MinGW are set up correctly
-
-## Code issues
-
-- Turn off gravity: ParticleToy.cpp lines 107-110
-- Edit spring forces (Euler computation): SpringForce.cpp calculate() function
+- Make sure to install CMake, C/C++, libpng and freeglut
+- Then run `cmake -B build`
+- Next `cmake --build build`
+- And lastly, to run, `./build/2imv15_project_1`
