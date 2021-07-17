@@ -3,13 +3,13 @@
 
 void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forces, std::vector<Force *> &constraints, std::vector<Wall *> &walls, int scene)
 {
+    Vec2f center(0.0, 0.0);
 
     switch (scene)
     {
     case 1: // Simple Spring
     {        
         const double dist = 0.6;
-        const Vec2f center(0.0, 0.0);
         const Vec2f offset(0.9, 0.0);
 
         particles.push_back(new Particle(center - offset));
@@ -21,7 +21,6 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
     case 2: // Spring with FixedConstraint (Pendulum)
     {
         const double dist = 0.3;
-        const Vec2f center(0.0, 0.0);
         const Vec2f offset(dist, 0.0);
 
         particles.push_back(new Particle(center - 2 * offset));
@@ -33,10 +32,9 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
         constraints.push_back((Force *)new FixedConstraint(particles[1]));
         break;
     }
-    case 3:
+    case 3: // CircularWire
     {
         const double dist = 0.2;
-        const Vec2f center(0.0, 0.0);
         const Vec2f offset(dist, 0.0);
 
         // Create three particles, attach them to each other, then add a
@@ -60,7 +58,6 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
     case 4:
     { // Cloth
         const double dist = 0.05;
-        Vec2f center(0.0, 0.0);
         const Vec2f offset(dist, 0.0);
 
         for (int i = 0; i < 11; i++)
@@ -108,41 +105,65 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
     case 5:
     {
         // Angular spring
+        const double dist = 0.2;
+        const Vec2f offset(dist, 0.0);
+        const double hairOffset = 0.05;
+        const double hairAngle = 0.003;
+        const int hairLength = 8;
+        //pythagorean theorem to find distance
+        const double hairDis = sqrt(2*pow(hairOffset,2));
 
-        // Set up particle locations
-        const Vec2f p1(0.0, 0.0);
-        const Vec2f p2(0.1, 0.0);
-        const Vec2f p3(0.1, 0.1);
-        const Vec2f p4(0.2, 0.1);
-        const Vec2f p5(0.3, 0.1);
+        std::vector <Vec2f> hairs;
+        hairs.push_back(Vec2f(dist*cos(PI/2.15), dist*sin(PI/2.15)));
+        hairs.push_back(Vec2f(dist*cos(PI/2.5), dist*sin(PI/2.5)));
+        hairs.push_back(Vec2f(dist*cos(PI/3), dist*sin(PI/3)));
+        hairs.push_back(Vec2f(dist*cos(PI/4), dist*sin(PI/4)));
+        hairs.push_back(Vec2f(dist*cos(PI/6), dist*sin(PI/6)));
+        hairs.push_back(Vec2f(dist*cos(PI/12), dist*sin(PI/12)));
+        hairs.push_back(Vec2f(dist*cos(PI-PI/2.15), dist*sin(PI-PI/2.15)));
+        hairs.push_back(Vec2f(dist*cos(PI-PI/2.5), dist*sin(PI-PI/2.5)));
+        hairs.push_back(Vec2f(dist*cos(PI-PI/3), dist*sin(PI-PI/3)));
+        hairs.push_back(Vec2f(dist*cos(PI-PI/4), dist*sin(PI-PI/4)));
+        hairs.push_back(Vec2f(dist*cos(PI-PI/6), dist*sin(PI-PI/6)));
+        hairs.push_back(Vec2f(dist*cos(PI-PI/12), dist*sin(PI-PI/12)));
 
-        // Create particles
-        particles.push_back(new Particle(p1));
-        particles.push_back(new Particle(p2));
-        particles.push_back(new Particle(p3));
-        particles.push_back(new Particle(p4));
-        particles.push_back(new Particle(p5));
+        // Create particles for right hair
+        for(int n=0; n<hairs.size()/2; n++){
+            for (int i=0; i<hairLength; i++){
+                const double x=hairOffset-(hairs.size()/2-n)*hairAngle;
+                const double y=sqrt(std::abs(pow(hairDis, 2)-pow(x, 2)));
+                particles.push_back(new Particle(hairs[n] + Vec2f(i*x, -i*y)));
+            }
+        }
+
+        // Create particles for left hair
+        for(int n=hairs.size()/2; n<hairs.size(); n++){
+            for (int i=0; i<hairLength; i++){
+                const double x=hairOffset-(hairs.size()-n)*hairAngle;
+                const double y=sqrt(std::abs(pow(hairDis, 2)-pow(x, 2)));
+                particles.push_back(new Particle(hairs[n] + Vec2f(-i*x, -i*y)));
+            }
+        }
 
         // Apply gravity
         for (int i = 0; i < particles.size(); i++)
-        {
             forces.push_back((Force *)new Gravity(particles[i]));
-        }
 
-        // Set up Angular Springs
-        for (int i = 0; i < particles.size() - 2; i++)
-        {
-            forces.push_back((Force *)new AngularSpringForce(particles[i], particles[i + 1], particles[i + 2], 0.1, 0.005, 1));
-        }
+        for (int n=0; n<hairs.size(); n++){ //For each hair
+            // Set up Angular Springs
+            for (int i = 0 + n*hairLength; i < (n+1)*hairLength - 2; i++)
+                forces.push_back((Force *)new AngularSpringForce(particles[i], particles[i + 1], particles[i + 2], hairDis, 0.005, 0.1));
 
-        // Set up rod constraints to prevent lenghtening of hair
-        for (int i = 0; i < particles.size() - 1; i++)
-        {
-            constraints.push_back((Force *)new RodConstraint(particles[i], particles[i + 1], 0.1));
-        }
+            // Set up rod constraints to prevent lenghtening of hair
+            for (int i = 0 + n*hairLength; i < (n+1)*hairLength - 1; i++)
+                constraints.push_back((Force *)new RodConstraint(particles[i], particles[i + 1], hairDis));
 
-        // Fix the first particle
-        constraints.push_back((Force *)new FixedConstraint(particles[0]));
+            //Add fixed constraint to each hair's "root"
+            constraints.push_back((Force *)new FixedConstraint(particles[n*hairLength]));
+        }       
+
+        constraints.push_back((Force *)new CircularWireConstraint(particles[0], center, dist));
     }
     }
 };
+
