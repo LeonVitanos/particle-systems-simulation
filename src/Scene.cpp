@@ -12,10 +12,11 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
         const double dist = 0.6;
         const Vec2f offset(0.9, 0.0);
 
-        particles.push_back(new Particle(center - offset));
-        particles.push_back(new Particle(center + offset));
+        particles.push_back(new Particle(center - offset, false));
+        particles.push_back(new Particle(center + offset, false));
 
         forces.push_back((Force *)new SpringForce(particles[0], particles[1], dist, 1, 1));
+
         break;
     }
     case 2: // Spring with FixedConstraint (Pendulum)
@@ -23,13 +24,12 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
         const double dist = 0.3;
         const Vec2f offset(dist, 0.0);
 
-        particles.push_back(new Particle(center - 2 * offset));
-        particles.push_back(new Particle(center));
+        particles.push_back(new Particle(center - 2 * offset, false));
+        particles.push_back(new Particle(center, true));
 
         forces.push_back((Force *)new Gravity(particles[0]));
         forces.push_back((Force *)new SpringForce(particles[0], particles[1], dist, 1, 1));
 
-        constraints.push_back((Force *)new FixedConstraint(particles[1]));
         break;
     }
     case 3: // CircularWire
@@ -40,9 +40,9 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
         // Create three particles, attach them to each other, then add a
         // circular wire constraint to the first.
 
-        particles.push_back(new Particle(center + offset));
-        particles.push_back(new Particle(center + offset + offset + offset));
-        particles.push_back(new Particle(center + offset + offset + offset + offset));
+        particles.push_back(new Particle(center + offset, false));
+        particles.push_back(new Particle(center + offset + offset + offset, false));
+        particles.push_back(new Particle(center + offset + offset + offset + offset, false));
 
         forces.push_back((Force *)new Gravity(particles[0]));
         forces.push_back((Force *)new Gravity(particles[1]));
@@ -65,11 +65,11 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
             center = Vec2f(0.0, 0.0 + 5 * dist - dist * i);
             for (int j = -4; j <= 4; j++)
             {
-                particles.push_back(new Particle(center + j * offset));
+                particles.push_back(new Particle(center + j * offset, false));
                 forces.push_back((Force *)new Gravity(particles.back()));
                 if (i == 0)
                 {
-                    //Apply fixed constraint on the first row particles
+                    //Apply sliding constraint on the first row particles
                     constraints.push_back((Force *)new SlidingConstraint(particles.back(), 0.25));
                     if (j != -4)
                     {
@@ -132,7 +132,7 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
             for (int i=0; i<hairLength; i++){
                 const double x=hairOffset-(hairs.size()/2-n)*hairAngle;
                 const double y=sqrt(std::abs(pow(hairDis, 2)-pow(x, 2)));
-                particles.push_back(new Particle(hairs[n] + Vec2f(i*x, -i*y)));
+                particles.push_back(new Particle(hairs[n] + Vec2f(i*x, -i*y), i==0?true:false));
             }
         }
 
@@ -141,7 +141,7 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
             for (int i=0; i<hairLength; i++){
                 const double x=hairOffset-(hairs.size()-n)*hairAngle;
                 const double y=sqrt(std::abs(pow(hairDis, 2)-pow(x, 2)));
-                particles.push_back(new Particle(hairs[n] + Vec2f(-i*x, -i*y)));
+                particles.push_back(new Particle(hairs[n] + Vec2f(-i*x, -i*y), i==0?true:false));
             }
         }
 
@@ -157,9 +157,6 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
             // Set up rod constraints to prevent lenghtening of hair
             for (int i = 0 + n*hairLength; i < (n+1)*hairLength - 1; i++)
                 constraints.push_back((Force *)new RodConstraint(particles[i], particles[i + 1], hairDis));
-
-            //Add fixed constraint to each hair's "root"
-            constraints.push_back((Force *)new FixedConstraint(particles[n*hairLength]));
         }       
 
         constraints.push_back((Force *)new CircularWireConstraint(particles[0], center, dist));

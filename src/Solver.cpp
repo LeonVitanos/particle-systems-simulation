@@ -1,8 +1,5 @@
 #include "Particle.h"
 #include "Force.h"
-#include <chrono>
-#include <ctime>
-#include <numeric>
 #include "Wall.h"
 #include "ConstraintSolver.h"
 
@@ -104,7 +101,6 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 	int ii, size = pVector.size();
 
 	std::vector<Particle *> initial;
-	auto start = std::chrono::system_clock::now();
 
 	switch (solver)
 	{
@@ -223,11 +219,4 @@ void simulation_step(std::vector<Particle *> pVector, std::vector<Force *> force
 	case 3: // Implicit
 		break;
 	}
-
-	//CPU timing
-	auto end = std::chrono::system_clock::now();
-	std::chrono::duration<double> elapsed_seconds = end - start;
-	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-	t.push_back(elapsed_seconds.count() * 1000);
-	//std::cout << "Average " << accumulate( t.begin(), t.end(), 0.0) / t.size() << "ms\n";
 }

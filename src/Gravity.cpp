@@ -6,7 +6,7 @@
 #include <GL/glut.h>
 #endif
 
-Gravity::Gravity(Particle *particle)
+Gravity::Gravity(Particle *particle):Force({particle})
 {
     p = particle;
 }

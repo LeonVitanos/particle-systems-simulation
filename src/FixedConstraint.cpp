@@ -6,7 +6,7 @@
 #include <GL/glut.h>
 #endif
 
-FixedConstraint::FixedConstraint(Particle *particle)
+FixedConstraint::FixedConstraint(Particle *particle): Force({particle})
 {
     p = particle;
 }
@@ -35,8 +35,4 @@ void FixedConstraint::draw(bool draw[]) {
     }
 }
 
-void FixedConstraint::calculate()
-{
-    this->force = -p->m_Force;
-    p->m_Force = Vec2f(0.0, 0.0);
-}
+void FixedConstraint::calculate(){}

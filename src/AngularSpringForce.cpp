@@ -8,7 +8,7 @@
 
 #define PI 3.1415926535897932384626433832795
 
-AngularSpringForce::AngularSpringForce(Particle *p1, Particle *p2, Particle *p3, double dist, double k_s, double k_d) : m_p1(p1), m_p2(p2), m_p3(p3), m_dist(dist), m_ks(k_s), m_kd(k_d) {}
+AngularSpringForce::AngularSpringForce(Particle *p1, Particle *p2, Particle *p3, double dist, double k_s, double k_d) :Force({p1, p2, p3}), m_p1(p1), m_p2(p2), m_p3(p3), m_dist(dist), m_ks(k_s), m_kd(k_d) {}
 
 void AngularSpringForce::calculate()
 {

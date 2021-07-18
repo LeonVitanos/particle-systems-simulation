@@ -238,7 +238,7 @@ static void get_from_UI()
 					dragParticle = ii;
 				}
 			}
-			pVector.push_back(new Particle(mouse));
+			pVector.push_back(new Particle(mouse, false));
 			forces.push_back((Force *)new SpringForce(pVector[dragParticle], pVector[size], diff, 1, 1));
 			constraints.push_back((Force *)new FixedConstraint(pVector[size]));
 		} else {

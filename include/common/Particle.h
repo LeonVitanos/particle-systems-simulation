@@ -5,7 +5,7 @@
 class Particle
 {
 public:
-	Particle(const Vec2f &ConstructPos);
+	Particle(const Vec2f &ConstructPos, bool isFixed);
 	virtual ~Particle(void);
 
 	void reset();
@@ -17,4 +17,5 @@ public:
 	Vec2f m_Force;
 
 	float m_Mass;
+	bool m_isFixed;
 };
