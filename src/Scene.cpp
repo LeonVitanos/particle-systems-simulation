@@ -71,10 +71,6 @@ void Scene::setup(std::vector<Particle *> &particles, std::vector<Force *> &forc
                 {
                     //Apply sliding constraint on the first row particles
                     constraints.push_back((Force *)new SlidingConstraint(particles.back(), 0.25));
-                    if (j != -4)
-                    {
-                    }
-                    // Rod constraints here
                 }
                 if (j != -4)
                     //spring connecting horizontally

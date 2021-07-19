@@ -85,7 +85,7 @@ void ConstraintSolver::calculate()
 	{
 		if(particles[i]->m_isFixed)
 			particles[i]->m_Force = Vec2f(0.0, 0.0);
-		else{			
+		else{
 			particles[i]->m_Force[0] += Qhat[i*2];
 			particles[i]->m_Force[1] += Qhat[i*2+1];
 		}

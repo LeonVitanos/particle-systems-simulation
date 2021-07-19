@@ -10,5 +10,11 @@ public:
 
     void draw(bool draw[]) override;
     void calculate() override;
-    Particle *p;
+    // float getC() override;
+    // float getCderivative() override;
+    // std::vector<Vec2f> getJ() override;
+    // std::vector<Vec2f> getJderivative() override;
+
+private:
+    Particle *const m_p;
 };

@@ -25,9 +25,9 @@
 *.a
 
 # Executables
-*.exe
 *.out
 *.app
+*.exe
 
 # VS-code stuff
 .idea
