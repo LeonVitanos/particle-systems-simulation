@@ -1,17 +1,3 @@
-# SiCG-Part-1
+# Particle Systems Simulation
 
-Simulation in Computer Graphics Project Part 1
-
-## Running
-
-### Makefile (Mac, VS Code)
-
-- Make sure to `brew install libpng` and install C/C++ and MakeFile Tools packages
-- Run using the makefile extension
-
-### CMake (Linux, VS Code)
-
-- Make sure to install CMake, C/C++, libpng and freeglut
-- Then run `cmake -B build`
-- Next `cmake --build build`
-- And lastly, to run, `./build/2imv15_project_1`
+There is a need for simulations in many industrial and scientific fields. From animated movies and video games to aerodynamic vehicle simulations, there is great demand for realistic simulations. This assignment introduces simulations through developing a particle system with constraints. In this project, the following have been implemented: generalized force and constraint structures, interaction, numerical integration schemes, 2D Cloth and it's interaction, angular springs and lastly implicit integration.
