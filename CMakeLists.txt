@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(2imv15_project_1)
+project(particles)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -66,6 +66,6 @@ set(LIBRARY_FILES
         lib/libpng12.dll.a
         lib/libpng12.la)
 
-add_executable(2imv15_project_1 ${SOURCE_FILES} ${HEADER_FILES} ${LIBRARY_FILES})
-target_link_libraries(2imv15_project_1 ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
-target_link_libraries(2imv15_project_1 PNG::PNG)
+add_executable(particles ${SOURCE_FILES} ${HEADER_FILES} ${LIBRARY_FILES})
+target_link_libraries(particles ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
+target_link_libraries(particles PNG::PNG)
