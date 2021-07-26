@@ -8,6 +8,6 @@ There is a need for simulations in many industrial and scientific fields. From a
 * 2D Cloth simulation
 * Visualization of forces
 
-![alt text](https://github.com/LeonVitanos/particle-systems-simulation/blob/master/screenshots/CircularWireConstraint.png?raw=true)
+![alt text](https://github.com/LeonVitanos/particle-systems-simulation/blob/main/screenshots/CircularWireConstraint.png?raw=true)
 
-![alt text](https://github.com/LeonVitanos/particle-systems-simulation/blob/master/screenshots/Cloth.png?raw=true)
+![alt text](https://github.com/LeonVitanos/particle-systems-simulation/blob/main/screenshots/Cloth.png?raw=true)
